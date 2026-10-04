@@ -4,6 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { app, state } from './lib/state'
 import Scene from './three/Scene'
+import { loadAvatar } from './three/avatarModel'
+import { loadCutout } from './three/cutout'
 import Preloader from './ui/Preloader'
 import Hud from './ui/Hud'
 import Cursor from './ui/Cursor'
@@ -24,11 +26,11 @@ export default function App() {
   const [fonts, setFonts] = useState(false)
   const [ready, setReady] = useState(false)
 
-  // The 3D labels are drawn to canvas, so the fonts must exist before the scene is built.
+  // The 3D labels are drawn to canvas, so the fonts must exist before the scene is built; the avatar model too.
   useEffect(() => {
     const done = () => setFonts(true)
-    const timer = setTimeout(done, 3500)
-    Promise.all(FONTS.map((f) => document.fonts.load(f))).then(() => document.fonts.ready).then(done, done)
+    const timer = setTimeout(done, 6000)
+    Promise.all([loadAvatar(), loadCutout(), ...FONTS.map((f) => document.fonts.load(f))]).then(() => document.fonts.ready).then(done, done)
     return () => clearTimeout(timer)
   }, [])
 

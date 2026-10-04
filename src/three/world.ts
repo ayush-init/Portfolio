@@ -2,6 +2,9 @@ import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { resume } from '../data/resume'
 import { state } from '../lib/state'
+import { loadedAvatar, rigAvatar } from './avatarModel'
+import { buildCutout, loadedCutout } from './cutout'
+import { buildMascot } from './mascot'
 
 export const C = {
   paper: '#F2EEE5',
@@ -188,84 +191,13 @@ function buildTower() {
 
 function buildAvatar() {
   const root = new THREE.Group()
+  // In order of preference: the illustrated cutout (resume.avatarImage), a rigged GLB (resume.avatarModel), the coded mascot.
+  const art = loadedCutout()
+  const gltf = art ? null : loadedAvatar()
+  const cutout = art ? buildCutout(art) : null
+  const figure = cutout ? null : gltf ? rigAvatar(gltf.scene) : buildMascot()
+  root.add(cutout ? cutout.root : gltf ? gltf.scene : (figure as ReturnType<typeof buildMascot>).root)
   const mat = (color: string, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness })
-  const clay = mat(C.clay)
-  const cobalt = mat(C.cobalt, 0.65)
-  const ink = mat(C.ink, 0.6)
-  const tang = mat(C.tang, 0.8)
-  const add = (parent: THREE.Object3D, geo: THREE.BufferGeometry, m: THREE.Material, x = 0, y = 0, z = 0) => {
-    const mesh = new THREE.Mesh(geo, m)
-    mesh.position.set(x, y, z)
-    mesh.castShadow = true
-    parent.add(mesh)
-    return mesh
-  }
-
-  const legGeo = new THREE.CapsuleGeometry(0.085, 0.42, 6, 16)
-  const shoeGeo = new RoundedBoxGeometry(0.18, 0.12, 0.32, 3, 0.05)
-  for (const x of [-0.125, 0.125]) {
-    add(root, legGeo, ink, x, 0.4, 0)
-    add(root, shoeGeo, clay, x, 0.06, 0.05)
-  }
-
-  const upper = new THREE.Group()
-  root.add(upper)
-  add(upper, new THREE.CapsuleGeometry(0.235, 0.32, 8, 24), cobalt, 0, 1.02, 0).scale.z = 0.82
-  add(upper, new THREE.TorusGeometry(0.15, 0.06, 12, 32), cobalt, 0, 1.32, 0).rotation.x = Math.PI / 2
-  const badge = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.2, 0.1),
-    new THREE.MeshBasicMaterial({ map: label('</>', 128, 64, 44), transparent: true, color: C.clay }),
-  )
-  badge.position.set(0, 1.1, 0.197)
-  upper.add(badge)
-
-  const armGeo = new THREE.CapsuleGeometry(0.068, 0.36, 6, 14)
-  const handGeo = new THREE.SphereGeometry(0.082, 20, 16)
-  const arm = (side: number) => {
-    const pivot = new THREE.Group()
-    pivot.position.set(side * 0.3, 1.22, 0)
-    pivot.rotation.z = side * 0.22
-    add(pivot, armGeo, cobalt, 0, -0.24, 0)
-    add(pivot, handGeo, clay, 0, -0.5, 0)
-    upper.add(pivot)
-    return pivot
-  }
-  arm(-1)
-  const waveArm = arm(1)
-
-  const head = new THREE.Group()
-  head.position.set(0, 1.64, 0)
-  upper.add(head)
-  add(head, new THREE.SphereGeometry(0.27, 40, 32), clay).scale.y = 0.96
-  add(head, new RoundedBoxGeometry(0.42, 0.16, 0.14, 4, 0.065), ink, 0, -0.01, 0.185)
-  const eyeMat = new THREE.MeshBasicMaterial({ color: '#AEB8FF' })
-  const eyeGeo = new THREE.SphereGeometry(0.034, 16, 12)
-  const eyes = [-0.09, 0.09].map((x) => {
-    const eye = new THREE.Mesh(eyeGeo, eyeMat)
-    eye.position.set(x, -0.01, 0.256)
-    eye.scale.set(1, 1.35, 0.4)
-    head.add(eye)
-    return eye
-  })
-  const beanie = new THREE.Group()
-  beanie.rotation.x = -0.24
-  beanie.position.y = 0.045
-  add(beanie, new THREE.SphereGeometry(0.283, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2), tang)
-  add(beanie, new THREE.TorusGeometry(0.276, 0.04, 12, 48), tang).rotation.x = Math.PI / 2
-  add(beanie, new THREE.SphereGeometry(0.06, 16, 12), clay, 0, 0.3, 0)
-  head.add(beanie)
-
-  // Code glyphs in orbit.
-  const orbit = new THREE.Group()
-  orbit.position.y = 1.15
-  root.add(orbit)
-  const glyphs = ['{ }', '</>', '=>', '( )', '&&', '[ ]'].map((g, i) => {
-    const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: label(g, 160, 96, 60), color: i % 3 === 1 ? C.tang : C.cobalt, transparent: true }),
-    )
-    orbit.add(sprite)
-    return sprite
-  })
 
   const stage = new THREE.Group()
   stage.position.y = STAGE_Y
@@ -278,30 +210,23 @@ function buildAvatar() {
 
   let yaw = 0
   function update(dt: number, time: number, cam: THREE.Vector3) {
-    const e = explode()
     const onStage = state.tail > 0.5
-    root.position.y = onStage ? STAGE_Y : e * e * 9
-    root.scale.setScalar(Math.max(0.0001, state.intro))
+    // Steps off (rise + shrink) as the stack opens, and is whole again on the contact stage.
+    const e = onStage ? 0 : explode()
+    if (cutout) {
+      // A flat figure always faces the camera; the cursor swings it a little so the relief reads as depth.
+      root.position.y = onStage ? STAGE_Y : 0
+      yaw = damp(yaw, Math.atan2(cam.x, cam.z) + state.mx * 0.2, 6, dt)
+      root.rotation.y = yaw
+      return cutout.update(dt, time, onStage ? smooth(clamp01(state.contact * 2.2)) : clamp01(state.intro) * (1 - e))
+    }
+    root.position.y = onStage ? STAGE_Y : e * 2.5
+    root.scale.setScalar(Math.max(0.0001, state.intro * (1 - e)))
 
     yaw = damp(yaw, Math.atan2(cam.x, cam.z - root.position.z) * 0.8 + state.mx * 0.18, 5, dt)
     root.rotation.y = yaw
-    upper.position.y = Math.sin(time * 1.7) * 0.012
-    head.rotation.y = damp(head.rotation.y, state.mx * 0.55, 6, dt)
-    head.rotation.x = damp(head.rotation.x, state.my * 0.28, 6, dt)
-
-    const blink = time % 3.4 > 3.25 ? 0.12 : 1.35
-    eyes.forEach((eye) => (eye.scale.y = damp(eye.scale.y, blink, 30, dt)))
-
     const w = Math.max(state.wave, smooth(clamp01((state.contact - 0.35) / 0.3)))
-    waveArm.rotation.z = damp(waveArm.rotation.z, lerp(0.22, 2.55 + Math.sin(time * 7) * 0.32, w), 10, dt)
-
-    orbit.rotation.y = time * 0.35
-    const show = state.intro * (1 - e)
-    glyphs.forEach((sprite, i) => {
-      const a = (i / glyphs.length) * Math.PI * 2
-      sprite.position.set(Math.cos(a) * 1.02, Math.sin(time * 0.9 + i * 1.7) * 0.28 + (i % 2 ? 0.25 : -0.2), Math.sin(a) * 1.02)
-      sprite.scale.set(0.34 * show, 0.2 * show, 1)
-    })
+    figure!.update(dt, time, w)
   }
   return { root, stage, update }
 }
@@ -385,8 +310,8 @@ export function buildWorld() {
     const fy = tower.focusY()
 
     // Hero → pull back to reveal the stack → isometric descent → drift to the stage → contact.
-    wantPos.set(0, 1.25, 5.1 * far).lerp(a.set(3.4, 2.5, 8.4 * far), s1)
-    wantTgt.set(0, 1.02, 0).lerp(b.set(0, 0.25, 0), s1)
+    wantPos.set(0, 1.2, 5 * far).lerp(a.set(3.4, 2.5, 8.4 * far), s1)
+    wantTgt.set(0, 1.1, 0).lerp(b.set(0, 0.25, 0), s1)
     wantPos.lerp(a.set(3 * far, fy + 3.9 * far, 8.6 * far), s2)
     wantTgt.lerp(b.set(0, fy - 0.15, 0), s2)
     wantPos.lerp(a.set(0, STAGE_Y + 5.6, 7.4), t)
@@ -396,7 +321,7 @@ export function buildWorld() {
     wantPos.x += state.mx * 0.3
     wantPos.y -= state.my * 0.18
 
-    const sx = mobile ? 0 : lerp(lerp(lerp(0.2, 0.29, s1), 0.23, s2), 0.25, c)
+    const sx = mobile ? 0 : lerp(lerp(lerp(0.26, 0.29, s1), 0.23, s2), 0.25, c)
     const sy = mobile ? lerp(lerp(-0.13, 0.2, s2), 0.29, c) : 0
     const k = first ? 1 : 1 - Math.exp(-7 * dt)
     first = false

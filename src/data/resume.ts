@@ -40,6 +40,11 @@ export const resume = {
   ],
   // Drop a PDF in /public and set this to '/Ayush-Chaurasiya-Resume.pdf' to show a download button.
   resumeUrl: '',
+  // The hero character. A transparent cutout in /public, with its relief map "<name>-depth.png" beside it.
+  // Set to '' to fall back to a rigged GLB (avatarModel) or the coded mascot.
+  avatarImage: 'avatar.webp',
+  // Leave empty for the built-in mascot. To use your own rigged model, put the GLB in /public and name it here, e.g. 'avatar.glb'.
+  avatarModel: '',
 
   about: {
     lead: 'Full-stack developer who takes products all the way: design the system, write the code, ship it to production, and keep it running.',
