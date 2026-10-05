@@ -28,14 +28,17 @@ const pageTop = (el: HTMLElement) => {
 export function measureSlots() {
   const q = (s: string) => document.querySelector<HTMLElement>(s)
   const name = q('.hero__last')
-  const foot = q('.hero__foot')
+  const foot = q('.hero__foot') // optional: the hero may be the name alone
   const end = q('.contact__col')
-  const hud = q('.hud')
-  if (!name || !foot || !end || !hud) return
-  state.slot.heroTop = pageTop(name) + name.offsetHeight * 0.55 // hair may overlap the tail of the surname
-  state.slot.heroBottom = Math.min(pageTop(foot), innerHeight - 8) // never below the first screen
-  state.slot.endTop = hud.offsetHeight
-  state.slot.endBottom = pageTop(end) - (document.documentElement.scrollHeight - innerHeight)
+  if (name) {
+    state.slot.heroTop = pageTop(name) + name.offsetHeight * 0.55 // hair may overlap the tail of the surname
+    // never below the first screen, and with room under the feet for the surface the character stands on
+    state.slot.heroBottom = Math.min(foot ? pageTop(foot) : Infinity, innerHeight * 0.9)
+  }
+  if (end) {
+    state.slot.endTop = q('.hud')?.offsetHeight ?? 0
+    state.slot.endBottom = pageTop(end) - (document.documentElement.scrollHeight - innerHeight)
+  }
 }
 
 export const app: { lenis: Lenis | null } = { lenis: null }

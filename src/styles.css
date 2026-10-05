@@ -133,54 +133,6 @@ h2 em {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---------- preloader ---------- */
-
-.boot {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: var(--pad);
-  background: var(--ink);
-  color: var(--paper);
-}
-.boot__rows {
-  display: grid;
-  gap: 0.5rem;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-}
-.boot__row {
-  display: grid;
-  grid-template-columns: 2.5rem 12rem auto;
-  opacity: 0;
-  transform: translateX(-12px);
-}
-.boot__row span:last-child {
-  color: var(--tang);
-}
-.boot__count {
-  display: grid;
-  justify-items: end;
-  font-weight: 800;
-  font-stretch: 75%;
-  font-size: clamp(5rem, 18vw, 16rem);
-  line-height: 0.8;
-  font-variant-numeric: tabular-nums;
-}
-.boot__count small {
-  margin-top: 1rem;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 400;
-  font-stretch: 100%;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
 /* ---------- hud ---------- */
 
 .hud {
@@ -1093,8 +1045,8 @@ h2 em {
     position: absolute;
     inset: auto 0 0;
     z-index: 2;
-    height: 30%;
-    background: linear-gradient(rgba(242, 238, 229, 0), var(--paper) 42%);
+    height: 9%;
+    background: linear-gradient(rgba(242, 238, 229, 0), var(--paper) 70%);
     pointer-events: none;
   }
   .hero__title {
