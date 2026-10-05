@@ -29,7 +29,7 @@ export const resume = {
   lastName: 'Chaurasiya',
   role: 'Full-stack developer',
   tagline:
-    'I build and ship scalable web apps and AI-powered platforms, from the first commit to production on AWS.',
+    'Building scalable web applications and AI-powered products from idea to production.',
   location: 'Bengaluru, India',
   email: 'ayushchaurasiya@example.com',
   // Phone is left off the public site on purpose. Add it here to show it in the contact section.

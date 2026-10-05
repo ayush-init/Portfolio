@@ -30,7 +30,7 @@ export default function Hero({ ready }: { ready: boolean }) {
         .timeline({ defaults: { ease: 'expo.out' } })
         .from(first.chars, { yPercent: 90, opacity: 0, rotateX: -70, stagger: 0.06, duration: 1.2 })
         .from(last.chars, { yPercent: 60, opacity: 0, stagger: 0.025, duration: 0.9 }, 0.35)
-        .from('.hero__meta > *, .hero__foot > *', { y: 24, opacity: 0, stagger: 0.07, duration: 0.9 }, 0.6)
+        .from('.hero__foot > *', { y: 24, opacity: 0, stagger: 0.07, duration: 0.9 }, 0.6)
       gsap.to(state, { intro: 1, duration: 1.3, ease: 'back.out(1.5)', delay: 0.15 })
       gsap
         .timeline({ delay: 1.1 })
@@ -42,23 +42,14 @@ export default function Hero({ ready }: { ready: boolean }) {
 
   return (
     <section className="hero" id="hero" ref={root} data-ready={ready}>
-      <div className="hero__meta">
-        <span>Portfolio / 2026</span>
-        <span>12.97° N, 77.59° E</span>
-      </div>
       <h1 className="hero__title" aria-label={`${resume.firstName} ${resume.lastName}`}>
         <span className="hero__first" aria-hidden>{resume.firstName}</span>
         <span className="hero__last" aria-hidden>{resume.lastName}</span>
       </h1>
       <div className="hero__foot">
         <div className="hero__role">
-          <span className="tag">L0 / client</span>
           <strong>{resume.role}</strong>
           <p>{resume.tagline}</p>
-        </div>
-        <div className="hero__scroll">
-          <span className="hero__wheel" />
-          scroll to descend the stack
         </div>
       </div>
     </section>
