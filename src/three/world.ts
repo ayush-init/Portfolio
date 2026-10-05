@@ -4,7 +4,6 @@ import { resume } from '../data/resume'
 import { state } from '../lib/state'
 import { loadedAvatar, rigAvatar } from './avatarModel'
 import { buildCutout, loadedCutout } from './cutout'
-import { buildMascot } from './mascot'
 
 export const C = {
   paper: '#F2EEE5',
@@ -191,13 +190,15 @@ function buildTower() {
 
 function buildAvatar() {
   const root = new THREE.Group()
-  // In order of preference: the illustrated cutout (resume.avatarImage), a rigged GLB (resume.avatarModel), the coded mascot.
+  // In order of preference: the illustrated cutout (resume.avatarImage), then a rigged GLB (resume.avatarModel).
+  // There is intentionally no built-in 3D mascot fallback.
   const art = loadedCutout()
   const gltf = art ? null : loadedAvatar()
   const cutout = art ? buildCutout(art) : null
   const height = cutout ? cutout.height : 1.8
-  const figure = cutout ? null : gltf ? rigAvatar(gltf.scene) : buildMascot()
-  root.add(cutout ? cutout.root : gltf ? gltf.scene : (figure as ReturnType<typeof buildMascot>).root)
+  const figure = cutout || !gltf ? null : rigAvatar(gltf.scene)
+  if (cutout) root.add(cutout.root)
+  else if (gltf) root.add(gltf.scene)
   const mat = (color: string, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness })
 
   const stage = new THREE.Group()
@@ -212,22 +213,25 @@ function buildAvatar() {
   let yaw = 0
   function update(dt: number, time: number, cam: THREE.Vector3) {
     const onStage = state.tail > 0.5
+    // Spotlight the figure while the About copy is on screen, then return it to normal before the stack sequence.
+    const aboutScale = 1 + 0.12 * Math.sin(Math.PI * smooth(state.about))
     // Steps off (rise + shrink) as the stack opens, and is whole again on the contact stage.
     const e = onStage ? 0 : explode()
     if (cutout) {
       // A flat figure always faces the camera; the cursor swings it a little so the relief reads as depth.
       root.position.y = onStage ? STAGE_Y : 0
+      root.scale.setScalar(onStage ? 1 : aboutScale)
       yaw = damp(yaw, Math.atan2(cam.x, cam.z) + state.mx * 0.2, 6, dt)
       root.rotation.y = yaw
       return cutout.update(dt, time, onStage ? smooth(clamp01(state.contact * 2.2)) : clamp01(state.intro) * (1 - e))
     }
     root.position.y = onStage ? STAGE_Y : e * 2.5
-    root.scale.setScalar(Math.max(0.0001, state.intro * (1 - e)))
+    root.scale.setScalar(Math.max(0.0001, state.intro * (1 - e) * aboutScale))
 
     yaw = damp(yaw, Math.atan2(cam.x, cam.z - root.position.z) * 0.8 + state.mx * 0.18, 5, dt)
     root.rotation.y = yaw
     const w = Math.max(state.wave, smooth(clamp01((state.contact - 0.35) / 0.3)))
-    figure!.update(dt, time, w)
+    figure?.update(dt, time, w)
   }
   return { root, stage, update, height }
 }

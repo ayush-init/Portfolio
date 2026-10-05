@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
-import { resume } from '../data/resume'
 import { scrollToId } from '../lib/state'
 
 const SECTIONS = [
@@ -51,9 +50,6 @@ export default function Hud() {
             </a>
           ))}
         </nav>
-        <span className="hud__status">
-          <i /> {resume.location}
-        </span>
       </header>
     </>
   )

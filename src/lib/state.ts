@@ -5,6 +5,7 @@ export const state = {
   intro: 0, // 0 → 1 once the preloader lifts
   wave: 0, // hero greeting wave
   hero: 0, // hero scrolled out
+  about: 0, // about section progress; used to feature the avatar
   skillsIn: 0, // skills section approaching
   skills: 0, // pinned skills progress
   xpIn: 0, // experience entering: the stack clears the screen over this

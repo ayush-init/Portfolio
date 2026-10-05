@@ -1,14 +1,22 @@
 import { useRef } from 'react'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { useGSAP } from '@gsap/react'
 import { resume } from '../data/resume'
+import { state } from '../lib/state'
 
 export default function About() {
   const root = useRef<HTMLElement>(null)
 
   useGSAP(
     () => {
+      ScrollTrigger.create({
+        trigger: root.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        onUpdate: (s) => (state.about = s.progress),
+      })
       const split = new SplitText('.about__lead', { type: 'words' })
       gsap.fromTo(
         split.words,

@@ -253,29 +253,6 @@ h2 em {
 .hud__nav a.is-current::after {
   transform: scaleX(1);
 }
-.hud__status {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  background: var(--card);
-}
-.hud__status i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--cobalt);
-  animation: pulse 1.8s infinite;
-}
-@keyframes pulse {
-  50% {
-    opacity: 0.25;
-    transform: scale(0.7);
-  }
-}
-
 .depth {
   position: fixed;
   right: 1.35rem;
@@ -326,7 +303,7 @@ h2 em {
 .hero {
   position: relative;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr;
   min-height: 100svh;
   padding: 6.2rem var(--pad) 7rem;
 }
@@ -367,7 +344,7 @@ h2 em {
   font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(2.8rem, 9.5vw, 10.5rem);
+  font-size: clamp(3.75rem, 13vw, 14.5rem);
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--cobalt);
@@ -375,33 +352,6 @@ h2 em {
 .hero__first div,
 .hero__last div {
   will-change: transform;
-}
-.hero__foot {
-  position: relative;
-  z-index: 3;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
-  padding-right: 3rem;
-}
-.hero__role {
-  display: grid;
-  gap: 0.5rem;
-  max-width: 27rem;
-}
-.hero__role strong {
-  padding-left: 1rem;
-  border-left: 4px solid var(--cobalt);
-  font-family: var(--mono);
-  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1.05;
-}
-.hero__role p {
-  color: var(--ink-2);
 }
 .hero__scroll {
   display: flex;
@@ -1147,9 +1097,6 @@ h2 em {
     background: linear-gradient(rgba(242, 238, 229, 0), var(--paper) 42%);
     pointer-events: none;
   }
-  .hero__foot {
-    padding-right: 0;
-  }
   .hero__title {
     align-self: start;
     margin-top: 2vh;
@@ -1158,15 +1105,8 @@ h2 em {
     font-size: min(31vw, 26svh);
   }
   .hero__last {
-    font-size: min(13vw, 11svh);
+    font-size: min(17vw, 14svh);
     margin-left: 0.2em;
-  }
-  .hero__role {
-    max-width: none;
-    padding: 1rem 1.1rem;
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    background: var(--card);
   }
   .about {
     min-height: 0;
