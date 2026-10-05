@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
-import { app, state } from './lib/state'
+import { app, measureSlots, state } from './lib/state'
 import Scene from './three/Scene'
 import { loadAvatar } from './three/avatarModel'
 import { loadCutout } from './three/cutout'
@@ -48,12 +48,15 @@ export default function App() {
       lenis.stop()
     }
     const move = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return // a finger scrolling is not a cursor to follow
       state.mx = (e.clientX / innerWidth) * 2 - 1
       state.my = (e.clientY / innerHeight) * 2 - 1
     }
     addEventListener('pointermove', move)
+    ScrollTrigger.addEventListener('refresh', measureSlots)
     return () => {
       removeEventListener('pointermove', move)
+      ScrollTrigger.removeEventListener('refresh', measureSlots)
       gsap.ticker.remove(tick)
       lenis?.destroy()
       app.lenis = null

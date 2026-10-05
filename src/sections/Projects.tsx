@@ -161,7 +161,9 @@ export default function Projects() {
             <h2>
               Things I <em>shipped</em>
             </h2>
-            <p>Real products with real users. Keep scrolling, the gallery moves sideways.</p>
+            <p>
+              Real products with real users.<span className="wide-only"> Keep scrolling, the gallery moves sideways.</span>
+            </p>
           </header>
 
           {resume.projects.map((p, i) => (

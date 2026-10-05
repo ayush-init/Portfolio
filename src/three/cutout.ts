@@ -124,5 +124,5 @@ export function buildCutout({ map, depth }: Art) {
     uniforms.uReveal.value = reveal
     root.visible = reveal > 0.002
   }
-  return { root, update }
+  return { root, update, height: HEIGHT }
 }

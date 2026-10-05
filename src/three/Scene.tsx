@@ -7,8 +7,12 @@ function World() {
   const world = useMemo(buildWorld, [])
   const camera = useThree((s) => s.camera) as PerspectiveCamera
   const size = useThree((s) => s.size)
+  const canvas = useThree((s) => s.gl.domElement)
   useEffect(() => () => world.dispose(), [world])
-  useFrame((s, dt) => world.update(camera, size.width, size.height, Math.min(dt, 0.05), s.clock.elapsedTime))
+  useFrame((s, dt) => {
+    const show = world.update(camera, size.width, size.height, Math.min(dt, 0.05), s.clock.elapsedTime)
+    canvas.style.opacity = show.toFixed(3)
+  })
   return <primitive object={world.root} />
 }
 

@@ -195,6 +195,7 @@ function buildAvatar() {
   const art = loadedCutout()
   const gltf = art ? null : loadedAvatar()
   const cutout = art ? buildCutout(art) : null
+  const height = cutout ? cutout.height : 1.8
   const figure = cutout ? null : gltf ? rigAvatar(gltf.scene) : buildMascot()
   root.add(cutout ? cutout.root : gltf ? gltf.scene : (figure as ReturnType<typeof buildMascot>).root)
   const mat = (color: string, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness })
@@ -228,7 +229,7 @@ function buildAvatar() {
     const w = Math.max(state.wave, smooth(clamp01((state.contact - 0.35) / 0.3)))
     figure!.update(dt, time, w)
   }
-  return { root, stage, update }
+  return { root, stage, update, height }
 }
 
 function buildAmbient() {
@@ -301,28 +302,50 @@ export function buildWorld() {
     tower.update(dt, time)
     ambient.update(time)
 
-    const mobile = width < 860
-    const far = mobile ? 1.5 : 1
+    const mobile = width < 900
     const s1 = smooth(state.hero)
     const s2 = smooth(state.skillsIn)
     const t = smooth(state.tail)
     const c = smooth(state.contact)
     const fy = tower.focusY()
 
-    // Hero → pull back to reveal the stack → isometric descent → drift to the stage → contact.
-    wantPos.set(0, 1.2, 5 * far).lerp(a.set(3.4, 2.5, 8.4 * far), s1)
-    wantTgt.set(0, 1.1, 0).lerp(b.set(0, 0.25, 0), s1)
-    wantPos.lerp(a.set(3 * far, fy + 3.9 * far, 8.6 * far), s2)
-    wantTgt.lerp(b.set(0, fy - 0.15, 0), s2)
-    wantPos.lerp(a.set(0, STAGE_Y + 5.6, 7.4), t)
-    wantTgt.lerp(b.set(0, STAGE_Y + 5.4, 0), t)
-    wantPos.lerp(a.set(0, STAGE_Y + 1.3, mobile ? 9.3 : 5.3), c)
-    wantTgt.lerp(b.set(0, STAGE_Y + 1.02, 0), c)
-    wantPos.x += state.mx * 0.3
-    wantPos.y -= state.my * 0.18
+    // Phones: size and place the character to fill the free space the layout actually leaves it.
+    const fit = (top: number, bottom: number) => {
+      const px = bottom - top
+      const dist = (avatar.height * height) / (Math.max(px, 1) * 0.95 * 0.5735) // 0.5735 = 2·tan(fov / 2)
+      return { ok: px >= 170, dist: Math.min(16, Math.max(4.5, dist)), sy: 0.5 - (top + bottom) / 2 / height }
+    }
+    const heroFit = fit(state.slot.heroTop, state.slot.heroBottom)
+    const endFit = fit(state.slot.endTop, state.slot.endBottom - 22)
 
-    const sx = mobile ? 0 : lerp(lerp(lerp(0.26, 0.29, s1), 0.23, s2), 0.25, c)
-    const sy = mobile ? lerp(lerp(-0.13, 0.2, s2), 0.29, c) : 0
+    if (mobile) {
+      // A calmer path: character under the name, the whole stack above its panel, character at the end.
+      wantPos.set(0, 1.2, heroFit.dist).lerp(a.set(1.6, 2.2, 12), s1)
+      wantTgt.set(0, 1.1, 0).lerp(b.set(0, 0.6, 0), s1)
+      wantPos.lerp(a.set(2.1, fy + 7.7, 15), s2)
+      wantTgt.lerp(b.set(0, fy - 0.15, 0), s2)
+      wantPos.lerp(a.set(0, STAGE_Y + 5.6, 9), t)
+      wantTgt.lerp(b.set(0, STAGE_Y + 5.4, 0), t)
+      wantPos.lerp(a.set(0, STAGE_Y + 1.3, endFit.dist), c)
+      wantTgt.lerp(b.set(0, STAGE_Y + 1.02, 0), c)
+    } else {
+      // Hero → pull back to reveal the stack → isometric descent → drift to the stage → contact.
+      wantPos.set(0, 1.2, 5).lerp(a.set(3.4, 2.5, 8.4), s1)
+      wantTgt.set(0, 1.1, 0).lerp(b.set(0, 0.25, 0), s1)
+      // small laptops: stand further back so the stack clears the skills list
+      const back = width < 1200 ? 1.2 : 1
+      wantPos.lerp(a.set(3 * back, fy + 3.9 * back, 8.6 * back), s2)
+      wantTgt.lerp(b.set(0, fy - 0.15, 0), s2)
+      wantPos.lerp(a.set(0, STAGE_Y + 5.6, 7.4), t)
+      wantTgt.lerp(b.set(0, STAGE_Y + 5.4, 0), t)
+      wantPos.lerp(a.set(0, STAGE_Y + 1.3, 5.3), c)
+      wantTgt.lerp(b.set(0, STAGE_Y + 1.02, 0), c)
+      wantPos.x += state.mx * 0.3
+      wantPos.y -= state.my * 0.18
+    }
+
+    const sx = mobile ? 0.1 * (1 - s1) : lerp(lerp(lerp(0.26, 0.29, s1), width < 1200 ? 0.26 : 0.23, s2), 0.25, c)
+    const sy = mobile ? lerp(lerp(heroFit.sy, 0.2, s2), endFit.sy, c) : 0
     const k = first ? 1 : 1 - Math.exp(-7 * dt)
     first = false
     pos.lerp(wantPos, k)
@@ -340,6 +363,14 @@ export function buildWorld() {
     fill.position.copy(tgt).add(a.set(-6, 2, 3))
 
     avatar.update(dt, time, pos)
+
+    // On phones the scene steps aside wherever there is text to read: it shows for the hero, the stack and the sign-off.
+    if (!mobile) return 1
+    // …and stays away altogether where a short screen leaves it no room.
+    const hero = heroFit.ok ? 1 - smooth(clamp01((state.hero - 0.25) / 0.45)) : 0
+    const stack = smooth(clamp01((state.skillsIn - 0.55) / 0.4)) * (1 - smooth(clamp01(state.tail / 0.05)))
+    const end = endFit.ok ? smooth(clamp01(state.contact / 0.3)) : 0
+    return Math.max(hero, stack, end)
   }
 
   function dispose() {

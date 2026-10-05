@@ -21,7 +21,9 @@ export default function Skills() {
       ScrollTrigger.create({
         trigger: root.current,
         start: 'top top',
-        end: `+=${layers.length * 95}%`,
+        // less scrolling per layer on phones
+        end: () => `+=${layers.length * (innerWidth < 900 ? 60 : 95)}%`,
+        invalidateOnRefresh: true,
         pin: true,
         onUpdate: (s) => {
           state.skills = s.progress
