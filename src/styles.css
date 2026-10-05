@@ -133,31 +133,6 @@ h2 em {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 90;
-  width: 38px;
-  height: 38px;
-  margin: -19px 0 0 -19px;
-  border: 1.5px solid var(--cobalt);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    scale 0.35s var(--ease),
-    background 0.35s,
-    opacity 0.3s;
-}
-.cursor.is-on {
-  opacity: 1;
-}
-.cursor.is-hover {
-  scale: 1.9;
-  background: rgba(29, 43, 255, 0.1);
-}
-
 /* ---------- preloader ---------- */
 
 .boot {
@@ -475,11 +450,19 @@ h2 em {
   width: min(44rem, 48vw);
 }
 .about__lead {
-  font-size: clamp(1.7rem, 3.3vw, 3.3rem);
-  font-weight: 600;
-  font-stretch: 88%;
-  line-height: 1.08;
+  font-size: clamp(2.4rem, 5.2vw, 5.4rem);
+  font-weight: 800;
+  font-stretch: 85%;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+.about__lead em {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-stretch: 100%;
   letter-spacing: -0.02em;
+  color: var(--cobalt);
 }
 .about__body {
   display: grid;
@@ -707,26 +690,30 @@ h2 em {
   background: var(--tang);
   box-shadow: 0 0 0 2px var(--tang);
 }
-/* the branch line peeling off main */
-.commit--edu::before {
+/* The education branch. Its lane runs through the centre of the orange nodes (2rem + 8px down each card).
+   ::after peels the lane off main at the first node; ::before carries it straight down to the next node. */
+.commit:not(.commit--edu) + .commit--edu::after {
   content: '';
   position: absolute;
   left: -5.2rem;
-  top: -1.2rem;
-  width: 3.8rem;
-  height: calc(2rem + 1.2rem + 8px);
+  top: -1.4rem;
+  width: calc(3.6rem + 8px);
+  height: calc(3.4rem + 9px);
   border: 2px solid var(--tang);
   border-width: 0 0 2px 2px;
-  border-radius: 0 0 0 1.4rem;
+  border-radius: 0 0 0 1.5rem;
 }
-.commit--edu + .commit--edu::before {
-  left: -1.2rem;
-  top: -2.4rem;
-  width: 0;
-  height: calc(4.4rem);
-  border-width: 0 0 0 2px;
-  border-radius: 0;
-  transform: translateX(-0.4rem);
+.commit--edu::before {
+  content: '';
+  position: absolute;
+  left: calc(-1.6rem + 7px);
+  top: calc(2rem + 8px);
+  width: 2px;
+  height: calc(100% + 2.4rem); /* this card plus the gap: node centre to node centre */
+  background: var(--tang);
+}
+.commit--edu:last-child::before {
+  display: none;
 }
 .commit__card {
   display: grid;
@@ -797,15 +784,13 @@ h2 em {
   line-height: 1.9;
   color: var(--cobalt);
 }
-.commit__tags,
-.card__stack {
+.commit__tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
   margin-top: 0.5rem;
 }
-.commit__tags span,
-.card__stack span {
+.commit__tags span {
   padding: 0.3rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 99px;
@@ -880,8 +865,8 @@ h2 em {
 }
 .card {
   display: grid;
-  grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
-  min-height: min(33rem, 64vh);
+  grid-template-columns: minmax(0, 12fr) minmax(0, 10fr);
+  height: min(30rem, 62vh); /* fixed, so every card is the same size whatever it says */
   border: 1px solid var(--line);
   border-radius: 1.6rem;
   background: var(--card);
@@ -894,17 +879,49 @@ h2 em {
 .card__cover {
   position: relative;
   display: grid;
-  grid-template-rows: auto 1fr;
-  background: var(--cobalt-soft);
+  place-items: center;
+  padding: 6% 9% 8% 6%;
   border-right: 1px solid var(--line);
   overflow: hidden;
+  /* the site's drafting grid, in cobalt */
+  background:
+    radial-gradient(rgba(29, 43, 255, 0.22) 1.2px, transparent 1.4px) 0 0 / 22px 22px,
+    var(--cobalt-soft);
+}
+/* Screenshots keep their own colours; the ink frame and solid cobalt block tie them to the theme. */
+.card__shot {
+  width: 100%;
+  transition:
+    translate 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+  border: 1.5px solid var(--ink);
+  border-radius: 0.75rem;
+  background: var(--card);
+  box-shadow: 0.85rem 0.85rem 0 var(--cobalt);
+  overflow: hidden;
+}
+.card__shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1; /* one shape for every screenshot */
+  object-fit: cover;
+  object-position: top;
+}
+/* the picture is the link: it lifts off its block on hover */
+.card__cover:hover .card__shot {
+  translate: -0.3rem -0.3rem;
+  box-shadow: 1.15rem 1.15rem 0 var(--cobalt);
+}
+.card__cover:hover .card__logo {
+  translate: -0.3rem -0.3rem;
+  filter: drop-shadow(1rem 1rem 0 var(--cobalt));
 }
 .card__chrome {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.8rem 1rem;
-  border-bottom: 1px solid var(--line);
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1.5px solid var(--ink);
   background: var(--card);
   font-family: var(--mono);
   font-size: 0.6rem;
@@ -924,61 +941,13 @@ h2 em {
 .card__chrome span {
   margin-left: 0.6rem;
 }
-.card__cover svg {
-  align-self: center;
-  width: 116%;
-  margin-left: -8%;
-}
-.c-sheet {
-  fill: #fff;
-  stroke: var(--ink);
-  stroke-width: 1.5;
-}
-.c-blue {
-  fill: var(--cobalt);
-}
-.c-fill {
-  fill: #b9c0ff;
-}
-.c-line {
-  fill: #d8d3c6;
-}
-.c-cell {
-  fill: #f3f1ff;
-}
-.c-tang {
-  fill: var(--tang);
-}
-.c-ink {
-  fill: var(--ink);
-}
-.c-paper {
-  fill: var(--paper);
-}
-.c-check {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.c-stroke {
-  fill: none;
-  stroke: var(--cobalt);
-  stroke-width: 3.5;
-  stroke-linecap: round;
-}
-.c-dash {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.5;
-  stroke-dasharray: 5 6;
-}
-.c-ring {
-  fill: none;
-  stroke: var(--cobalt);
-  stroke-opacity: 0.3;
-  stroke-width: 1.5;
+.card__logo {
+  width: min(64%, 19rem);
+  height: auto;
+  transition:
+    translate 0.4s var(--ease),
+    filter 0.4s var(--ease);
+  filter: drop-shadow(0.7rem 0.7rem 0 var(--cobalt));
 }
 .card__body {
   display: grid;
@@ -987,16 +956,9 @@ h2 em {
   padding: clamp(1.4rem, 2.6vw, 2.6rem);
 }
 .card__meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
   font-family: var(--mono);
   font-size: 0.62rem;
   text-transform: uppercase;
-  color: var(--muted);
-}
-.card__meta span:last-child {
-  flex: none;
   color: var(--cobalt);
 }
 .card h3 {
@@ -1008,16 +970,6 @@ h2 em {
 }
 .card__body > p {
   color: var(--ink-2);
-}
-.card__body ul {
-  display: grid;
-  gap: 0.35rem;
-  font-size: 0.95rem;
-  color: var(--ink-2);
-}
-.card__body li {
-  padding-left: 1.2rem;
-  background: linear-gradient(var(--tang), var(--tang)) 0 0.65em / 0.5rem 2px no-repeat;
 }
 .card__link {
   justify-self: start;
@@ -1294,8 +1246,9 @@ h2 em {
   .commit--edu .commit__node {
     left: calc(-1.6rem - 7px);
   }
-  .commit--edu::before {
-    display: none;
+  .commit--edu::before,
+  .commit--edu::after {
+    display: none !important;
   }
   .work__pin {
     height: auto;
@@ -1314,7 +1267,14 @@ h2 em {
   }
   .card {
     grid-template-columns: 1fr;
-    min-height: 0;
+    height: auto;
+  }
+  /* stacked cards match too: one picture shape, one text block height */
+  .card__cover {
+    aspect-ratio: 16 / 11;
+  }
+  .card__body > p {
+    min-height: 7.75em;
   }
   .card__cover {
     border-right: 0;

@@ -300,6 +300,8 @@ export function buildWorld() {
 
   function update(camera: THREE.PerspectiveCamera, width: number, height: number, dt: number, time: number) {
     tower.update(dt, time)
+    // The stack lifts clear as the next section arrives, so nothing hangs over the experience cards.
+    tower.root.position.y = smooth(clamp01(state.xpIn)) * 8
     ambient.update(time)
 
     const mobile = width < 900

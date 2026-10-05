@@ -7,6 +7,7 @@ export const state = {
   hero: 0, // hero scrolled out
   skillsIn: 0, // skills section approaching
   skills: 0, // pinned skills progress
+  xpIn: 0, // experience entering: the stack clears the screen over this
   tail: 0, // experience top → contact top
   contact: 0, // contact entering
   hoverSkill: '',

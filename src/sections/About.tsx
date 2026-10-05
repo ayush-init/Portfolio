@@ -54,7 +54,9 @@ export default function About() {
     <section className="about" id="about" ref={root}>
       <div className="about__col">
         <span className="tag">01 / readme.md</span>
-        <p className="about__lead">{resume.about.lead}</p>
+        <h2 className="about__lead">
+          {resume.about.lead} <em>{resume.about.leadAccent}</em>
+        </h2>
         <div className="about__body">
           {resume.about.body.map((p) => (
             <p key={p}>{p}</p>

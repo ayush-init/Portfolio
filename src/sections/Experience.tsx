@@ -1,13 +1,21 @@
 import { useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { resume } from '../data/resume'
+import { state } from '../lib/state'
 
 export default function Experience() {
   const root = useRef<HTMLElement>(null)
 
   useGSAP(
     () => {
+      ScrollTrigger.create({
+        trigger: root.current,
+        start: 'top bottom',
+        end: 'top 50%',
+        onUpdate: (s) => (state.xpIn = s.progress),
+      })
       gsap.from('.xp__head > *', {
         y: 60,
         opacity: 0,

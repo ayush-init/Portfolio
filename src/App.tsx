@@ -8,7 +8,6 @@ import { loadAvatar } from './three/avatarModel'
 import { loadCutout } from './three/cutout'
 import Preloader from './ui/Preloader'
 import Hud from './ui/Hud'
-import Cursor from './ui/Cursor'
 import Hero from './sections/Hero'
 import About from './sections/About'
 import Skills from './sections/Skills'
@@ -83,7 +82,6 @@ export default function App() {
         <Contact />
       </main>
       <Hud />
-      <Cursor />
       <div className="grain" aria-hidden />
     </>
   )

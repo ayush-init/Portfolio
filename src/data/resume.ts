@@ -15,13 +15,13 @@ export type Commit = {
 export type Project = {
   title: string
   kind: string
-  year: string
+  // Keep every blurb to roughly the same length (about 140 characters) so the cards stay identical in size.
   blurb: string
-  points: string[]
-  stack: string[]
   href: string
   linkLabel: string
-  cover: 'docs' | 'board' | 'cities' | 'graph'
+  // File in /public/projects. 'shot' is a site screenshot shown in a browser frame; 'logo' is a cut-out mark.
+  image: string
+  imageKind: 'shot' | 'logo'
 }
 
 export const resume = {
@@ -47,10 +47,14 @@ export const resume = {
   avatarModel: '',
 
   about: {
-    lead: 'Full-stack developer who takes products all the way: design the system, write the code, ship it to production, and keep it running.',
+    // Headline: what I do and why it matters, in one line. The name is already the hero, so it is not repeated here.
+    lead: 'I build software that real people',
+    leadAccent: 'depend on.',
+    // Proof first (one specific thing per paragraph), then what I care about. Numbers live in the stats row below.
     body: [
-      'I was Co-Founder and CTO at Ximverse, where I led product and engineering for an AI-powered export compliance platform that automates Indian customs export filing. Before that I was a full-stack developer intern at LeapX, PW Institute of Innovation.',
-      'I built BruteForce, a DSA tracking platform used by 800+ students at PW IOI. I care about scalable systems, sharp problem-solving, and software that real people depend on.',
+      'As Co-Founder and CTO of Ximverse, I led product and engineering for an AI-powered platform that automates Indian customs export filing. It was incubated at PIEDS, BITS Pilani, and backed by a government grant.',
+      'I also built BruteForce, a DSA tracking platform that students at PW IOI use to follow their coding activity, rankings and progress.',
+      'I care about scalable systems, sharp problem-solving, and owning a product end to end: design it, build it, ship it, and keep it running.',
     ],
     stats: [
       { value: 1000, suffix: '+', label: 'DSA problems solved' },
@@ -88,7 +92,7 @@ export const resume = {
     },
     {
       code: 'L2',
-      name: 'Data',
+      name: 'Databases & ORM',
       blurb: 'Where state lives. Relational, document, cache and queue.',
       skills: [
         { name: 'PostgreSQL', note: 'Ximverse · BruteForce' },
@@ -101,7 +105,7 @@ export const resume = {
     },
     {
       code: 'L3',
-      name: 'AI',
+      name: 'AI Engineering',
       blurb: 'LLMs wired into real workflows, not bolted on as a demo.',
       skills: [
         { name: 'LLM integration', note: 'Ximverse' },
@@ -117,15 +121,12 @@ export const resume = {
       name: 'Cloud and DevOps',
       blurb: 'The ground floor. Build, ship, monitor, repeat.',
       skills: [
-        { name: 'AWS EC2', note: 'production hosting' },
-        { name: 'AWS S3', note: 'BruteForce' },
+        { name: 'AWS EC2 & S3', note: 'hosting · BruteForce' },
         { name: 'Docker', note: 'Ximverse' },
         { name: 'CI / CD', note: 'pipelines' },
         { name: 'BullMQ', note: 'BruteForce' },
         { name: 'Git + GitHub', note: 'daily' },
-        { name: 'Vercel', note: 'deploys' },
-        { name: 'Postman', note: 'API testing' },
-      ],
+        { name: 'Vercel', note: 'deploys' },      ],
     },
   ] as Layer[],
 
@@ -146,15 +147,17 @@ export const resume = {
     },
     {
       kind: 'work',
-      hash: 'l3apx25',
-      role: 'Full Stack Developer Intern',
-      org: 'LeapX, PW Institute of Innovation',
-      period: 'Feb 2025 — May 2025',
+      hash: 'r1ft4c1',
+      role: 'Event Coordinator',
+      org: 'RIFT Hackathon',
+      orgNote: 'Multi-city hackathon',
+      // Add the dates here, e.g. 'Jan 2026 — Mar 2026'.
+      period: '',
       points: [
-        'Delivered end-to-end product features from implementation to deployment in a collaborative engineering team.',
-        'Improved application performance and fixed production issues through debugging and code optimization.',
+        'Organised RIFT Hackathon with the team, running it across four cities.',
+        'Drew 8,000+ registrations and 2,200+ participants.',
       ],
-      tags: ['Full stack', 'Production debugging', 'Performance'],
+      tags: ['Leadership', 'Event operations', 'Community'],
     },
     {
       kind: 'edu',
@@ -179,57 +182,43 @@ export const resume = {
   projects: [
     {
       title: 'Ximverse',
-      kind: 'Export compliance and shipping-bill automation platform',
-      year: '2025 — 26',
+      kind: 'Export compliance platform',
       blurb:
-        'A cross-border trade platform with a modern product catalogue and end-to-end export documentation, so exporters create and manage essential trade documents in one place.',
-      points: [
-        'AI-powered workflow automation understands user requests and fills the relevant forms automatically.',
-        'Cuts manual work across the export documentation process.',
-      ],
-      stack: ['Next.js', 'TypeScript', 'Node.js', 'Express.js', 'PostgreSQL', 'Prisma', 'Tailwind CSS', 'AWS', 'Docker'],
+        'An AI-powered export compliance platform that automates Indian customs export filing, so exporters handle their trade documents in one place.',
       href: 'https://www.ximverse.com/',
       linkLabel: 'ximverse.com',
-      cover: 'docs',
+      image: 'ximverse.webp',
+      imageKind: 'shot',
     },
     {
       title: 'BruteForce',
-      kind: 'DSA tracker and admin dashboard',
-      year: '2025',
+      kind: 'DSA tracker and dashboard',
       blurb:
-        'A full-stack analytics platform that tracks coding activity, rankings and student performance across coding platforms.',
-      points: [
-        'Adopted in real-world use at PW IOI for tracking student performance and activity.',
-        'Used by 800+ students.',
-      ],
-      stack: ['Next.js', 'React', 'Node.js', 'Express.js', 'PostgreSQL', 'Prisma', 'Tailwind CSS', 'Redis', 'BullMQ', 'AWS S3'],
+        'A DSA tracking platform that follows coding activity, rankings and progress across coding platforms, used by 800+ students at PW IOI.',
       href: 'https://bruteforce.pwioi.com/',
       linkLabel: 'bruteforce.pwioi.com',
-      cover: 'board',
+      image: 'bruteforce.webp',
+      imageKind: 'shot',
     },
     {
-      title: 'RIFT Hackathon',
-      kind: 'Organizer, multi-city hackathon',
-      year: 'Leadership',
+      title: 'Kusumita',
+      kind: 'NGO foundation website',
       blurb:
-        'Organized RIFT Hackathon across four cities, attracting 8,000+ registrations and 2,200+ participants.',
-      points: ['Four cities.', '8,000+ registrations, 2,200+ participants.'],
-      stack: ['Community', 'Operations', 'Leadership'],
-      href: '',
-      linkLabel: '',
-      cover: 'cities',
+        'The website for Kusumita Foundation, an NGO restoring nature and supporting communities, with programs, events, donations and volunteer sign-up.',
+      href: 'https://kusumita.vercel.app/',
+      linkLabel: 'kusumita.vercel.app',
+      image: 'kusumita.webp',
+      imageKind: 'shot',
     },
     {
-      title: 'More on GitHub',
-      kind: 'Experiments, DSA and side builds',
-      year: 'Ongoing',
+      title: 'GitHub',
+      kind: 'Open source and side builds',
       blurb:
-        '1,000+ DSA problems solved across Codeforces, CodeChef, LeetCode and GeeksforGeeks, plus everything else I am tinkering with.',
-      points: [],
-      stack: ['Codeforces', 'CodeChef', 'LeetCode', 'GeeksforGeeks'],
+        'I am an active contributor on GitHub. It is where my experiments, side builds and the code behind these projects live, commit by commit.',
       href: 'https://github.com/ayush-init',
       linkLabel: 'github.com/ayush-init',
-      cover: 'graph',
+      image: 'github.webp',
+      imageKind: 'logo',
     },
   ] as Project[],
 }
