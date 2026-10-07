@@ -312,7 +312,7 @@ export function buildWorld() {
     const s1 = smooth(state.hero)
     const s2 = smooth(state.skillsIn)
     const t = smooth(state.tail)
-    const c = smooth(state.contact)
+    const c = smooth(mobile ? clamp01(state.contact * 3) : state.contact)
     const fy = tower.focusY()
 
     // Phones: size and place the character to fill the free space the layout actually leaves it.
@@ -326,9 +326,10 @@ export function buildWorld() {
 
     if (mobile) {
       // A calmer path: character under the name, the whole stack above its panel, character at the end.
+      const stackBack = Math.max(1, height * 0.5 / Math.max(120, state.slot.stackBottom - state.slot.stackTop))
       wantPos.set(0, 1.2, heroFit.dist).lerp(a.set(1.6, 2.2, 12), s1)
       wantTgt.set(0, 1.1, 0).lerp(b.set(0, 0.6, 0), s1)
-      wantPos.lerp(a.set(2.1, fy + 7.7, 15), s2)
+      wantPos.lerp(a.set(2.1 * stackBack, fy - 0.15 + 7.85 * stackBack, 15 * stackBack), s2)
       wantTgt.lerp(b.set(0, fy - 0.15, 0), s2)
       wantPos.lerp(a.set(0, STAGE_Y + 5.6, 9), t)
       wantTgt.lerp(b.set(0, STAGE_Y + 5.4, 0), t)
@@ -351,7 +352,8 @@ export function buildWorld() {
     }
 
     const sx = mobile ? 0.1 * (1 - s1) : lerp(lerp(lerp(0.26, 0.29, s1), width < 1200 ? 0.26 : 0.23, s2), 0.25, c)
-    const sy = mobile ? lerp(lerp(heroFit.sy, 0.2, s2), endFit.sy, c) : 0
+    const stackSy = 0.5 - (state.slot.stackTop + state.slot.stackBottom) / 2 / height
+    const sy = mobile ? lerp(lerp(heroFit.sy, stackSy, s2), endFit.sy, c) : 0
     const k = first ? 1 : 1 - Math.exp(-7 * dt)
     first = false
     pos.lerp(wantPos, k)

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import { scrollToId } from '../lib/state'
@@ -14,6 +14,31 @@ const SECTIONS = [
 
 export default function Hud() {
   const [current, setCurrent] = useState(0)
+  const [open, setOpen] = useState(false)
+  const header = useRef<HTMLElement>(null)
+  const toggle = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const dismiss = (e: PointerEvent) => {
+      if (!header.current?.contains(e.target as Node)) setOpen(false)
+    }
+    const escape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+        toggle.current?.focus()
+      }
+    }
+    const resize = () => { if (innerWidth >= 900) setOpen(false) }
+    document.addEventListener('pointerdown', dismiss)
+    document.addEventListener('keydown', escape)
+    window.addEventListener('resize', resize)
+    return () => {
+      document.removeEventListener('pointerdown', dismiss)
+      document.removeEventListener('keydown', escape)
+      window.removeEventListener('resize', resize)
+    }
+  }, [open])
 
   useGSAP(() => {
     SECTIONS.forEach((sec, i) => {
@@ -31,13 +56,19 @@ export default function Hud() {
 
   const go = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault()
+    setOpen(false)
     scrollToId(id)
   }
 
   return (
     <>
-      <header className="hud">
-        <nav className="hud__nav" aria-label="Sections">
+      <header className="hud" ref={header}>
+        <button className="hud__toggle" type="button" ref={toggle}
+          aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open}
+          aria-controls="section-navigation" onClick={() => setOpen(!open)}>
+          <span /><span /><span />
+        </button>
+        <nav id="section-navigation" className={`hud__nav${open ? ' is-open' : ''}`} aria-label="Sections">
           {SECTIONS.filter((s) => s.nav).map((s) => (
             <a
               key={s.id}

@@ -16,7 +16,7 @@ export const state = {
   my: 0,
   // Free vertical space (viewport px) for the character on phones: under the name in the hero,
   // and above the sign-off at the very end. Measured from the real layout, so any screen height works.
-  slot: { heroTop: 0, heroBottom: 0, endTop: 0, endBottom: 0 },
+  slot: { heroTop: 0, heroBottom: 0, endTop: 0, endBottom: 0, stackTop: 0, stackBottom: 0 },
 }
 
 const pageTop = (el: HTMLElement) => {

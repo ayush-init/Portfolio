@@ -46,6 +46,7 @@ export default function Skills() {
           </h2>
         </header>
 
+        <div className="skills__scene" aria-hidden />
         <div className="skills__panels">
           {layers.map((layer, i) => (
             <article className={`layer ${i === active ? 'is-active' : ''}`} key={layer.code} aria-hidden={i !== active}>
