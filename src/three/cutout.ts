@@ -73,15 +73,16 @@ const fragment = /* glsl */ `
     float cut = uReveal * 1.1 - 0.05;
     if (c.a < 0.02 || vUv.y > cut) discard;
 
-    // slope of the relief = which way each edge faces
+    // Soft, natural relief slope avoiding harsh depth artifacts
     vec2 slope = vec2(
       texture2D(uDepth, vUv - vec2(uTexel.x, 0.0)).r - texture2D(uDepth, vUv + vec2(uTexel.x, 0.0)).r,
       texture2D(uDepth, vUv - vec2(0.0, uTexel.y)).r - texture2D(uDepth, vUv + vec2(0.0, uTexel.y)).r
-    ) * 2.4;
+    ) * 0.8;
     vec2 light = normalize(vec2(uMouse.x * 1.4 - 0.35, 0.55 - uMouse.y));
     vec3 col = c.rgb;
-    col += vec3(1.0, 0.94, 0.86) * max(dot(slope, light), 0.0) * 0.5; // key light on the near edge
-    col += uAccent * max(dot(slope, -light), 0.0) * 0.75;            // cobalt rim on the far edge
+    // Gentle highlights that preserve the original illustrated artwork
+    col += vec3(1.0, 0.98, 0.94) * max(dot(slope, light), 0.0) * 0.12;
+    col += vec3(0.88, 0.92, 1.0) * max(dot(slope, -light), 0.0) * 0.08;
 
     // scan line while materialising
     float glow = smoothstep(0.045, 0.0, cut - vUv.y) * (1.0 - step(0.995, uReveal));
