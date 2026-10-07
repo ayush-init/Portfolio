@@ -91,11 +91,13 @@ export default function Experience() {
                   ))}
                 </ul>
               )}
-              <div className="commit__tags">
-                {c.tags.map((t) => (
-                  <span key={t}>{t}</span>
-                ))}
-              </div>
+              {c.tags.length > 0 && (
+                <div className="commit__tags">
+                  {c.tags.map((t) => (
+                    <span key={t}>{t}</span>
+                  ))}
+                </div>
+              )}
             </div>
           </article>
         ))}

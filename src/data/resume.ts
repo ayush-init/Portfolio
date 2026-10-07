@@ -140,16 +140,16 @@ export const resume = {
       orgNote: 'Export and trade-compliance SaaS',
       period: 'Dec 2025 — Jun 2026',
       points: [
-        'Co-founded Ximverse and led development of an AI-powered export compliance platform that automates Indian customs export filing.',
+        'Co-founded Ximverse and led the development of an AI-powered B2B platform that orchestrates cross-border trade and EXIM operations in India.',
         'Incubated at PIEDS, BITS Pilani, and secured a ₹7 lakh government grant to build and scale the platform.',
         'Built AI-assisted document parsing and validation workflows to reduce manual processing.',
       ],
-      tags: ['Leadership', 'AI workflows', 'Next.js', 'PostgreSQL', 'AWS'],
+      tags: [],
     },
     {
       kind: 'work',
       hash: 'r1ft4c1',
-      role: 'Event Coordinator',
+      role: 'Event Organiser',
       org: 'RIFT Hackathon',
       orgNote: 'Multi-city hackathon',
       // Add the dates here, e.g. 'Jan 2026 — Mar 2026'.
@@ -157,8 +157,9 @@ export const resume = {
       points: [
         'Organised RIFT Hackathon with the team, running it across four cities.',
         'Drew 8,000+ registrations and 2,200+ participants.',
+        'Built and maintained the official hackathon platform for registrations, team formation, submissions, judging, and organizer workflows.',
       ],
-      tags: ['Leadership', 'Event operations', 'Community'],
+      tags: [],
     },
     {
       kind: 'edu',
