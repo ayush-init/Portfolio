@@ -31,6 +31,18 @@ html {
 html:not(.is-ready) {
   overflow: hidden;
 }
+/* Readable initial HTML for crawlers, slow connections and visitors without JavaScript. */
+html:has(.static-portfolio) { overflow: auto; }
+.static-portfolio { max-width: 64rem; margin: auto; padding: 3rem var(--pad); }
+.static-portfolio header { margin-bottom: 2rem; }
+.static-portfolio h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.05; }
+.static-portfolio nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+.static-portfolio section { margin-top: 3rem; }
+.static-portfolio h2 { font-size: 2rem; line-height: 1.1; margin-bottom: 1rem; }
+.static-portfolio h3 { font-size: 1.4rem; margin: 1.5rem 0 0.5rem; }
+.static-portfolio p { margin: 0.7rem 0; }
+.static-portfolio ul { padding-left: 1.25rem; list-style: disc; }
+.static-portfolio a { color: var(--cobalt); text-decoration: underline; overflow-wrap: anywhere; }
 
 body {
   margin: 0;
