@@ -217,7 +217,7 @@ export const resume = {
       blurb:
         'Not everything I build makes it to this portfolio. Explore more projects, experiments and open-source work on my Github.',
       href: 'https://github.com/ayush-init',
-      linkLabel: 'github.com',
+      linkLabel: 'github',
       image: 'github.webp',
       imageKind: 'logo',
     },
