@@ -31,7 +31,7 @@ export const resume = {
   tagline:
     'Building scalable web applications and AI-powered products from idea to production.',
   location: 'Bengaluru, India',
-  email: 'ayushchaurasiya@example.com',
+  email: 'chaurasiyaayush2006@gmail.com',
   // Phone is left off the public site on purpose. Add it here to show it in the contact section.
   phone: '',
   links: [

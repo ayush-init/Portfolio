@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
@@ -7,8 +7,73 @@ import { resume } from '../data/resume'
 import { state } from '../lib/state'
 import { magnetic, release } from '../ui/Cursor'
 
+interface HistoryEntry {
+  command: string
+  response?: string
+  isOk?: boolean
+}
+
 export default function Contact() {
   const root = useRef<HTMLElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const termBodyRef = useRef<HTMLDivElement>(null)
+  const [input, setInput] = useState('')
+  const [history, setHistory] = useState<HistoryEntry[]>([])
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    if (termBodyRef.current) {
+      termBodyRef.current.scrollTop = termBodyRef.current.scrollHeight
+    }
+  }, [history])
+
+  const handleCopy = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    navigator.clipboard.writeText(resume.email)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2200)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const raw = input.trim()
+      const cmd = raw.toLowerCase()
+      if (!raw) {
+        setHistory((prev) => [...prev, { command: '' }])
+      } else if (cmd === 'clear') {
+        setHistory([])
+      } else if (cmd === 'email' || cmd === 'mail' || cmd === 'contact') {
+        navigator.clipboard.writeText(resume.email)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2200)
+        setHistory((prev) => [
+          ...prev,
+          { command: raw, response: '✓ Email copied to clipboard! Ready when you are.', isOk: true },
+        ])
+      } else if (cmd === 'help') {
+        setHistory((prev) => [
+          ...prev,
+          { command: raw, response: 'commands: email, clear, whoami, stack, or type anything for fun!' },
+        ])
+      } else if (cmd === 'whoami') {
+        setHistory((prev) => [
+          ...prev,
+          { command: raw, response: 'a curious builder with great taste :)' },
+        ])
+      } else if (cmd === 'stack') {
+        setHistory((prev) => [
+          ...prev,
+          { command: raw, response: 'React, TypeScript, Three.js, GSAP, Node.js, Python, PyTorch' },
+        ])
+      } else {
+        setHistory((prev) => [
+          ...prev,
+          { command: raw, response: `> logged: "${raw}". Type "email" to copy contact or ping on LinkedIn!` },
+        ])
+      }
+      setInput('')
+    }
+  }
 
   useGSAP(
     () => {
@@ -44,20 +109,66 @@ export default function Contact() {
           Got something to build? <em>Let's ship it.</em>
         </h2>
 
-        <div className="term" aria-hidden>
+        <div
+          className="term"
+          data-lenis-prevent="true"
+          onWheel={(e) => e.stopPropagation()}
+          onClick={() => inputRef.current?.focus()}
+        >
           <div className="term__bar">
             <i />
             <i />
             <i />
-            <span>zsh</span>
+            <button
+              type="button"
+              className={`term__copy-btn ${copied ? 'is-copied' : ''}`}
+              onClick={handleCopy}
+              title="Copy email address"
+            >
+              <span>{copied ? '✓' : '✉'}</span>
+              <span>{copied ? 'copied!' : 'copy email'}</span>
+            </button>
+            <span className="term__bar-title">zsh</span>
           </div>
-          <p className="term__line">
-            <b>$</b> curl -X POST /api/hire -d '{`{"to":"${resume.firstName.toLowerCase()}"}`}'
-          </p>
-          <p className="term__line term__ok">201 Created</p>
-          <p className="term__line">
-            <b>$</b> <span className="term__caret" />
-          </p>
+
+          <div
+            className="term__body"
+            ref={termBodyRef}
+            data-lenis-prevent="true"
+            onWheel={(e) => e.stopPropagation()}
+          >
+            <p className="term__line">
+              <b>$</b> curl -X POST /api/hire -d '{`{"to":"${resume.firstName.toLowerCase()}"}`}'
+            </p>
+            <p className="term__line term__ok">201 Created</p>
+
+            {history.map((h, i) => (
+              <div key={i} className="term__history">
+                <p className="term__line">
+                  <b>$</b> {h.command}
+                </p>
+                {h.response && (
+                  <p className={`term__line ${h.isOk ? 'term__ok' : 'term__reply'}`}>{h.response}</p>
+                )}
+              </div>
+            ))}
+
+            <div className="term__prompt">
+              <b>$</b>
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="term__input"
+                placeholder='type anything here or try "email"...'
+                autoComplete="off"
+                spellCheck="false"
+                aria-label="Interactive terminal input"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="contact__links">

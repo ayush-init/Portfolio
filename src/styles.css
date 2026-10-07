@@ -932,8 +932,9 @@ h2 em {
   color: var(--paper);
   font-family: var(--mono);
   font-size: 0.74rem;
-  line-height: 2;
+  line-height: 1.9;
   box-shadow: 0 40px 70px -35px rgba(18, 18, 16, 0.6);
+  cursor: text;
 }
 .term__bar {
   display: flex;
@@ -941,16 +942,66 @@ h2 em {
   gap: 0.4rem;
   padding: 0.9rem 0 0.6rem;
   color: var(--muted);
+  user-select: none;
 }
 .term__bar i {
   background: #3a3934;
 }
-.term__bar span {
+.term__copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   margin-left: auto;
+  margin-right: 0.75rem;
+  padding: 0.22rem 0.65rem;
+  border: 1px solid #33322d;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  cursor: pointer;
+  text-transform: lowercase;
+  transition: all 0.2s ease;
+}
+.term__copy-btn:hover {
+  border-color: #55534c;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--paper);
+}
+.term__copy-btn.is-copied {
+  border-color: #10b981;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+}
+.term__bar-title {
   font-size: 0.6rem;
+  color: var(--muted);
+}
+.term__body {
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #55534c transparent;
+}
+.term__body::-webkit-scrollbar {
+  width: 5px;
+}
+.term__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.term__body::-webkit-scrollbar-thumb {
+  background: #44423c;
+  border-radius: 99px;
+}
+.term__body::-webkit-scrollbar-thumb:hover {
+  background: #66635b;
 }
 .term__line {
   overflow-wrap: anywhere;
+  margin: 0;
 }
 .term__line b {
   color: var(--tang);
@@ -959,18 +1010,34 @@ h2 em {
 .term__ok {
   color: #9aa5ff;
 }
-.term__caret {
-  display: inline-block;
-  width: 0.6em;
-  height: 1.1em;
-  vertical-align: text-bottom;
-  background: var(--paper);
-  animation: caret 1s steps(1) infinite;
+.term__reply {
+  color: #8ed6aa;
 }
-@keyframes caret {
-  50% {
-    opacity: 0;
-  }
+.term__prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+.term__prompt b {
+  color: var(--tang);
+  font-weight: 500;
+}
+.term__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  margin: 0;
+  caret-color: var(--paper);
+}
+.term__input::placeholder {
+  color: #524f47;
 }
 .contact__links {
   display: flex;
