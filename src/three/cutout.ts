@@ -91,7 +91,7 @@ export function buildCutout({ map, depth }: Art) {
   const img = map.image as { width: number; height: number }
   const h = (HEIGHT * img.height) / (img.height - PAD * 2)
   const w = (h * img.width) / img.height
-  const geo = new THREE.PlaneGeometry(w, h, 72, 180)
+  const geo = new THREE.PlaneGeometry(w, h, 32, 80)
   geo.translate(0, h / 2 - (PAD / img.height) * h, 0)
 
   const uniforms = {

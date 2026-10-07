@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
@@ -23,17 +23,23 @@ const FONTS = [
 export default function App() {
   const [fonts, setFonts] = useState(false)
   const [ready, setReady] = useState(false)
+  const sceneReady = useCallback(() => {
+    // Finish layout measurements before the visible entrance animation starts.
+    ScrollTrigger.refresh()
+    setReady(true)
+  }, [])
 
   // The 3D labels are drawn to canvas, so the fonts must exist before the scene is built; the avatar model too.
   useEffect(() => {
-    // no loading screen: the page starts as soon as these are in
+    let active = true
     const done = () => {
+      if (!active) return
+      clearTimeout(timer)
       setFonts(true)
-      setReady(true)
     }
     const timer = setTimeout(done, 6000)
     Promise.all([loadAvatar(), loadCutout(), ...FONTS.map((f) => document.fonts.load(f))]).then(() => document.fonts.ready).then(done, done)
-    return () => clearTimeout(timer)
+    return () => { active = false; clearTimeout(timer) }
   }, [])
 
   useEffect(() => {
@@ -70,12 +76,11 @@ export default function App() {
     document.documentElement.classList.add('is-ready')
     document.documentElement.classList.remove('is-booting')
     app.lenis?.start()
-    ScrollTrigger.refresh()
   }, [ready])
 
   return (
     <>
-      {fonts && <Scene />}
+      {fonts && <Scene onReady={sceneReady} />}
       <main>
         <Hero ready={ready} />
         <About />

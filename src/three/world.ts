@@ -262,7 +262,7 @@ function buildAmbient() {
     const side = rnd() > 0.5 ? 1 : -1
     mesh.position.set(side * lerp(2.9, 9, rnd()), lerp(5, STAGE_Y - 4, rnd()), lerp(-8, 1.5, rnd()))
     mesh.scale.setScalar(lerp(0.6, 1.7, rnd()))
-    mesh.castShadow = true
+    mesh.castShadow = false // distant decorative particles do not need their own shadow passes
     root.add(mesh)
     return { mesh, y: mesh.position.y, sx: rnd() - 0.5, sy: rnd() - 0.5, phase: rnd() * 6.28 }
   })
@@ -286,7 +286,7 @@ export function buildWorld() {
   root.add(new THREE.HemisphereLight('#ffffff', '#d9d2c2', 1.5))
   const sun = new THREE.DirectionalLight('#fff6e8', 2.3)
   sun.castShadow = true
-  sun.shadow.mapSize.set(2048, 2048)
+  sun.shadow.mapSize.set(1024, 1024)
   sun.shadow.camera.left = sun.shadow.camera.bottom = -6
   sun.shadow.camera.right = sun.shadow.camera.top = 6
   sun.shadow.camera.near = 0.5

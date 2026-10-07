@@ -1,14 +1,17 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import type { PerspectiveCamera } from 'three'
 import { buildWorld } from './world'
 import { state } from '../lib/state'
 
-function World() {
+function World({ onReady }: { onReady: () => void }) {
   const world = useMemo(buildWorld, [])
   const camera = useThree((s) => s.camera) as PerspectiveCamera
   const size = useThree((s) => s.size)
   const canvas = useThree((s) => s.gl.domElement)
+  const gl = useThree((s) => s.gl)
+  const scene = useThree((s) => s.scene)
+  const warmed = useRef(false)
   const regions = useMemo(() => ({
     hero: document.getElementById('hero'),
     stack: document.querySelector('.skills__scene'),
@@ -16,7 +19,39 @@ function World() {
   }), [])
   const visibility = useMemo(() => ({ value: 0 }), [])
   useEffect(() => () => world.dispose(), [world])
+  useEffect(() => {
+    let active = true
+    let frame = 0
+    const warm = async () => {
+      try {
+        world.update(camera, canvas.clientWidth, canvas.clientHeight, 0, 0)
+        await gl.compileAsync(scene, camera)
+        if (!active) return
+        // Upload the avatar texture and geometry, and initialize shadows while the page is concealed.
+        const intro = state.intro
+        state.intro = 1
+        try {
+          world.update(camera, canvas.clientWidth, canvas.clientHeight, 0, 0)
+          gl.render(scene, camera)
+        } finally {
+          state.intro = intro
+          world.update(camera, canvas.clientWidth, canvas.clientHeight, 0, 0)
+        }
+      } finally {
+        if (active) {
+          warmed.current = true
+          // Let the browser finish the warm-up frame before animating the DOM.
+          frame = requestAnimationFrame(() => {
+            frame = requestAnimationFrame(onReady)
+          })
+        }
+      }
+    }
+    void warm().catch(() => { /* Keep the readable portfolio available if GPU preparation fails. */ })
+    return () => { active = false; cancelAnimationFrame(frame) }
+  }, [world, camera, canvas, gl, scene, onReady])
   useFrame((s, dt) => {
+    if (!warmed.current) return
     if (size.width < 900) {
       const hero = regions.hero?.getBoundingClientRect()
       const stack = regions.stack?.getBoundingClientRect()
@@ -56,19 +91,19 @@ function World() {
   return <primitive object={world.root} />
 }
 
-export default function Scene() {
+export default function Scene({ onReady }: { onReady: () => void }) {
   return (
     <Canvas
       className="webgl"
       flat
       shadows
-      dpr={[1, 1.75]}
+      dpr={[1, 1.5]}
       camera={{ fov: 32, near: 0.1, far: 90, position: [0, 1.25, 5.1] }}
       gl={{ antialias: true, alpha: true }}
       style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}
       aria-hidden
     >
-      <World />
+      <World onReady={onReady} />
     </Canvas>
   )
 }

@@ -67,7 +67,7 @@ export const resume = {
     {
       code: 'L0',
       name: 'Frontend',
-      blurb: 'The surface. Interfaces people actually touch, fast and typed.',
+      blurb: 'Sharp design. Smooth interactions. Every pixel has a purpose.',
       skills: [
         { name: 'React.js', note: 'UI / components' },
         { name: 'Next.js', note: 'full-stack web' },
@@ -79,7 +79,7 @@ export const resume = {
     {
       code: 'L1',
       name: 'Backend',
-      blurb: 'APIs, services and business logic that hold up under real traffic.',
+      blurb: 'Behind every click, logic that delivers.',
       skills: [
         { name: 'Node.js', note: 'server runtime' },
         { name: 'Express.js', note: 'REST APIs' },
@@ -92,7 +92,7 @@ export const resume = {
     {
       code: 'L2',
       name: 'Databases & ORM',
-      blurb: 'Where state lives. Relational, document, cache and queue.',
+      blurb: 'Clean models. Fast queries. Data in its right place.',
       skills: [
         { name: 'PostgreSQL', note: 'relational data' },
         { name: 'MongoDB', note: 'document data' },
@@ -105,7 +105,7 @@ export const resume = {
     {
       code: 'L3',
       name: 'AI Engineering',
-      blurb: 'LLMs wired into real workflows, not bolted on as a demo.',
+      blurb: 'From prompts to products. Intelligence put to work.',
       skills: [
         { name: 'LLM Integration', note: 'AI features' },
         { name: 'RAG', note: 'knowledge retrieval' },
@@ -118,7 +118,7 @@ export const resume = {
     {
       code: 'L4',
       name: 'Cloud and DevOps',
-      blurb: 'The ground floor. Build, ship, monitor, repeat.',
+      blurb: 'From local to live. Built to keep running.',
       skills: [
         { name: 'AWS EC2 & S3', note: 'cloud infrastructure' },
         { name: 'Docker', note: 'containerization' },
