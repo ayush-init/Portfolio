@@ -61,24 +61,28 @@ export default function Contact() {
         </div>
 
         <div className="contact__links">
-          <a className="btn btn--solid" href={`mailto:${resume.email}`} onPointerMove={magnetic} onPointerLeave={release}>
-            {resume.email} <span aria-hidden>↗</span>
-          </a>
           {resume.links.map((l) => (
-            <a className="btn" key={l.label} href={l.href} target="_blank" rel="noreferrer" onPointerMove={magnetic} onPointerLeave={release}>
-              {l.label} <small>{l.handle}</small>
+            <a
+              className="btn"
+              key={l.label}
+              href={l.href}
+              target="_blank"
+              rel="noreferrer"
+              onPointerMove={magnetic}
+              onPointerLeave={release}
+            >
+              {l.icon && (
+                <img
+                  src={l.icon}
+                  alt=""
+                  className="btn__icon"
+                />
+              )}
+              <span>{l.label}</span>
+              <small>{l.handle}</small>
+              <span className="btn__arrow" aria-hidden>↗</span>
             </a>
           ))}
-          {resume.phone && (
-            <a className="btn" href={`tel:${resume.phone.replace(/\s/g, '')}`} onPointerMove={magnetic} onPointerLeave={release}>
-              {resume.phone}
-            </a>
-          )}
-          {resume.resumeUrl && (
-            <a className="btn" href={resume.resumeUrl} download onPointerMove={magnetic} onPointerLeave={release}>
-              Download resume <span aria-hidden>↓</span>
-            </a>
-          )}
         </div>
       </div>
     </section>

@@ -35,8 +35,8 @@ export const resume = {
   // Phone is left off the public site on purpose. Add it here to show it in the contact section.
   phone: '',
   links: [
-    { label: 'GitHub', handle: 'ayush-init', href: 'https://github.com/ayush-init' },
-    { label: 'LinkedIn', handle: 'in/ayush2006', href: 'https://www.linkedin.com/in/ayush2006/' },
+    { label: 'GitHub', handle: 'ayush-init', href: 'https://github.com/ayush-init', icon: '/svg/github.svg' },
+    { label: 'LinkedIn', handle: 'in/ayush2006', href: 'https://www.linkedin.com/in/ayush2006/', icon: '/svg/linkedin.svg' },
   ],
   // Drop a PDF in /public and set this to '/Ayush-Chaurasiya-Resume.pdf' to show a download button.
   resumeUrl: '',
