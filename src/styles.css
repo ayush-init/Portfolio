@@ -716,16 +716,31 @@ h2 em {
   width: max-content;
   font-size: clamp(4rem, 13vw, 13rem);
   font-weight: 800;
-  font-stretch: 75%;
+  font-stretch: 88%;
+  letter-spacing: 0.03em;
   line-height: 0.9;
   text-transform: uppercase;
   white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--ink);
+  color: var(--paper);
+  paint-order: stroke fill;
+  -webkit-text-stroke: 2.2px var(--ink);
+}
+.marquee__inner span {
+  display: inline-flex;
+  align-items: center;
 }
 .marquee__inner i {
   font-style: normal;
-  color: var(--cobalt);
+  display: inline-block;
+  width: 0.45em;
+  height: clamp(6px, 0.85vw, 11px);
+  background: var(--cobalt);
+  border-radius: 99px;
+  vertical-align: middle;
+  margin: 0 0.4em;
+  overflow: hidden;
+  user-select: none;
+  color: transparent;
   -webkit-text-stroke: 0;
 }
 .work__pin {

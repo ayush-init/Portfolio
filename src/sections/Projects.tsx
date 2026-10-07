@@ -63,7 +63,7 @@ export default function Projects() {
         <div className="marquee__inner">
           {Array.from({ length: 4 }, (_, i) => (
             <span key={i}>
-              design <i>—</i> build <i>—</i> deploy <i>—</i> scale <i>—</i>
+              design <i>-</i> build <i>-</i> deploy <i>-</i> scale <i>-</i>
             </span>
           ))}
         </div>

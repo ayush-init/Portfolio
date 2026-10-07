@@ -138,7 +138,7 @@ export const resume = {
       role: 'Co-Founder and CTO',
       org: 'Ximverse',
       orgNote: 'Export and trade-compliance SaaS',
-      period: 'Dec 2025 — Jun 2026',
+      period: 'Dec 2025 - Jun 2026',
       points: [
         'Co-founded Ximverse and led the development of an AI-powered B2B platform that orchestrates cross-border trade and EXIM operations in India.',
         'Incubated at PIEDS, BITS Pilani, and secured a ₹7 lakh government grant to build and scale the platform.',
@@ -152,7 +152,7 @@ export const resume = {
       role: 'Event Organiser',
       org: 'RIFT Hackathon',
       orgNote: 'Multi-city hackathon',
-      // Add the dates here, e.g. 'Jan 2026 — Mar 2026'.
+      // Add the dates here, e.g. 'Jan 2026 - Mar 2026'.
       period: '',
       points: [
         'Organised RIFT Hackathon with the team, running it across four cities.',
@@ -166,7 +166,7 @@ export const resume = {
       hash: 'bca2427',
       role: 'Bachelor of Computer Applications (BCA)',
       org: 'Manipal University Jaipur',
-      period: '2024 — 2027',
+      period: '2024 - 2027',
       points: [],
       tags: [],
     },
@@ -175,7 +175,7 @@ export const resume = {
       hash: 'pwioi24',
       role: 'Skills Upskilling Residential Program',
       org: 'PW Institute of Innovation (PW IOI), Bengaluru',
-      period: '2024 — 2028',
+      period: '2024 - 2028',
       points: [],
       tags: [],
     },
@@ -186,7 +186,7 @@ export const resume = {
       title: 'Ximverse',
       kind: 'Export compliance platform',
       blurb:
-        'An AI-powered export compliance platform that automates Indian customs export filing, so exporters handle their trade documents in one place.',
+        'An AI-powered B2B platform that orchestrates cross-border trade and EXIM operations, helping Indian exporters manage compliance, documentation, and customs workflows in one place.',
       href: 'https://www.ximverse.com/',
       linkLabel: 'ximverse.com',
       image: 'ximverse.webp',
@@ -214,9 +214,9 @@ export const resume = {
     },
     {
       title: 'GitHub',
-      kind: 'Open source and side builds',
+      kind: 'Still Building',
       blurb:
-        'I am an active contributor on GitHub. It is where my experiments, side builds and the code behind these projects live, commit by commit.',
+        'Not everything I build makes it to this portfolio. Explore more projects, experiments and open-source work on my Github.',
       href: 'https://github.com/ayush-init',
       linkLabel: 'github.com/ayush-init',
       image: 'github.webp',

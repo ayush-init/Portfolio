@@ -81,14 +81,6 @@ export default function Contact() {
           )}
         </div>
       </div>
-
-      <footer className="foot">
-        <span>
-          © 2026 {resume.firstName} {resume.lastName}
-        </span>
-        <span>{resume.location}</span>
-        <span>Built with Three.js, GSAP and Lenis</span>
-      </footer>
     </section>
   )
 }
