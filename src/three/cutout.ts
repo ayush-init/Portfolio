@@ -41,17 +41,22 @@ const vertex = /* glsl */ `
   void main() {
     vUv = uv;
     vec3 p = position;
-    // Keep the face almost flat so relief does not distort the original illustration.
+    // Keep the face flat to preserve exact facial proportions without distortion
     float face = smoothstep(0.78, 0.9, uv.y);
-    p.z += texture2D(uDepth, uv).r * mix(0.15, 0.025, face);
+    p.z += texture2D(uDepth, uv).r * mix(0.15, 0.03, face);
 
+    // Natural breathing animation
     float breath = sin(uTime * 1.5);
     float chest = smoothstep(0.5, 0.68, uv.y) * (1.0 - smoothstep(0.78, 0.88, uv.y));
     p.y += smoothstep(0.42, 0.9, uv.y) * breath * 0.0065;
     p.x += (uv.x - 0.5) * chest * breath * 0.014;
 
-    // A gentle whole-image sway preserves the face and hair instead of stretching individual vertices.
-    p.x += sin(uTime * 0.7) * 0.0035;
+    // Weight shifts from the feet; the head leads the cursor; hair moves with wind
+    p.x += uv.y * uv.y * sin(uTime * 0.7) * 0.007;
+    float head = smoothstep(0.8, 0.9, uv.y);
+    p.x += head * uMouse.x * 0.014;
+    p.y -= head * uMouse.y * 0.006;
+    p.x += smoothstep(0.9, 1.0, uv.y) * sin(uTime * 1.9 + uv.x * 9.0) * 0.004;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
   }
@@ -70,18 +75,21 @@ const fragment = /* glsl */ `
     vec4 c = texture2D(uMap, vUv);
     if (c.a < 0.02) discard;
 
-    // Soft, natural relief slope avoiding harsh depth artifacts
+    // slope of the relief = which way each edge faces
     vec2 slope = vec2(
       texture2D(uDepth, vUv - vec2(uTexel.x, 0.0)).r - texture2D(uDepth, vUv + vec2(uTexel.x, 0.0)).r,
       texture2D(uDepth, vUv - vec2(0.0, uTexel.y)).r - texture2D(uDepth, vUv + vec2(0.0, uTexel.y)).r
-    ) * 0.8;
+    ) * 2.4;
     vec2 light = normalize(vec2(uMouse.x * 1.4 - 0.35, 0.55 - uMouse.y));
     vec3 col = c.rgb;
-    // Gentle highlights that preserve the original illustrated artwork
-    col += vec3(1.0, 0.98, 0.94) * max(dot(slope, light), 0.0) * 0.12;
-    col += vec3(0.88, 0.92, 1.0) * max(dot(slope, -light), 0.0) * 0.08;
+    col += vec3(1.0, 0.94, 0.86) * max(dot(slope, light), 0.0) * 0.5; // key light on the near edge
+    col += uAccent * max(dot(slope, -light), 0.0) * 0.75;            // cobalt rim on the far edge
 
-    // Fade the complete silhouette; a vertical reveal cuts off the head during reverse scrolling.
+    // Scan line while materialising
+    float cut = uReveal * 1.1 - 0.05;
+    float glow = smoothstep(0.045, 0.0, cut - vUv.y) * (1.0 - step(0.995, uReveal));
+    col = mix(col, uAccent + 0.4, glow);
+
     gl_FragColor = vec4(col, c.a * smoothstep(0.0, 1.0, uReveal));
     #include <colorspace_fragment>
   }
@@ -91,7 +99,7 @@ export function buildCutout({ map, depth }: Art) {
   const img = map.image as { width: number; height: number }
   const h = (HEIGHT * img.height) / (img.height - PAD * 2)
   const w = (h * img.width) / img.height
-  const geo = new THREE.PlaneGeometry(w, h, 32, 80)
+  const geo = new THREE.PlaneGeometry(w, h, 72, 180)
   geo.translate(0, h / 2 - (PAD / img.height) * h, 0)
 
   const uniforms = {

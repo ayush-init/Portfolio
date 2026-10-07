@@ -223,10 +223,13 @@ function buildAvatar() {
     // Steps off (rise + shrink) as the stack opens, and is whole again on the contact stage.
     const e = onStage ? 0 : explode()
     if (cutout) {
-      // Match the full camera orientation: yaw alone lets an overhead camera squash the artwork vertically.
       root.position.y = onStage ? STAGE_Y : 0
       root.scale.setScalar(onStage ? 1 : aboutScale)
+      // Match camera orientation so elevated/overhead angles never compress the face or body
       root.quaternion.copy(camera.quaternion)
+      // Interactive mouse swing relative to the camera view
+      yaw = damp(yaw, state.mx * 0.18, 6, dt)
+      root.rotateY(yaw)
       return cutout.update(dt, time, onStage ? smooth(clamp01(state.contact * 2.2)) : clamp01(state.intro) * (1 - e))
     }
     root.position.y = onStage ? STAGE_Y : e * 2.5
