@@ -168,7 +168,7 @@ export const resume = {
       org: 'Manipal University Jaipur',
       period: '2024 — 2027',
       points: [],
-      tags: ['Degree'],
+      tags: [],
     },
     {
       kind: 'edu',
@@ -177,7 +177,7 @@ export const resume = {
       org: 'PW Institute of Innovation (PW IOI), Bengaluru',
       period: '2024 — 2028',
       points: [],
-      tags: ['Residential program'],
+      tags: [],
     },
   ] as Commit[],
 
