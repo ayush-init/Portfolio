@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#F2EEE5" />
+    <style>
+      html { background: #f2eee5; }
+      html.is-booting { overflow: hidden; }
+      html.is-booting #root { visibility: hidden; }
+    </style>
+    <script>
+      document.documentElement.classList.add('is-booting');
+      // Restore the readable HTML if the app bundle cannot load.
+      window.setTimeout(function () {
+        document.documentElement.classList.remove('is-booting');
+      }, 15000);
+      window.addEventListener('error', function (event) {
+        if (event.target instanceof HTMLScriptElement && event.target.type === 'module') {
+          document.documentElement.classList.remove('is-booting');
+        }
+      }, true);
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>

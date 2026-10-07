@@ -68,6 +68,7 @@ export default function App() {
   useEffect(() => {
     if (!ready) return
     document.documentElement.classList.add('is-ready')
+    document.documentElement.classList.remove('is-booting')
     app.lenis?.start()
     ScrollTrigger.refresh()
   }, [ready])

@@ -70,8 +70,7 @@ const fragment = /* glsl */ `
 
   void main() {
     vec4 c = texture2D(uMap, vUv);
-    float cut = uReveal * 1.1 - 0.05;
-    if (c.a < 0.02 || vUv.y > cut) discard;
+    if (c.a < 0.02) discard;
 
     // Soft, natural relief slope avoiding harsh depth artifacts
     vec2 slope = vec2(
@@ -84,11 +83,8 @@ const fragment = /* glsl */ `
     col += vec3(1.0, 0.98, 0.94) * max(dot(slope, light), 0.0) * 0.12;
     col += vec3(0.88, 0.92, 1.0) * max(dot(slope, -light), 0.0) * 0.08;
 
-    // scan line while materialising
-    float glow = smoothstep(0.045, 0.0, cut - vUv.y) * (1.0 - step(0.995, uReveal));
-    col = mix(col, uAccent + 0.4, glow);
-
-    gl_FragColor = vec4(col, c.a);
+    // Fade the complete silhouette; a vertical reveal cuts off the head during reverse scrolling.
+    gl_FragColor = vec4(col, c.a * smoothstep(0.0, 1.0, uReveal));
     #include <colorspace_fragment>
   }
 `

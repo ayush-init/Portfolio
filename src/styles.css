@@ -1242,7 +1242,7 @@ h2 em {
   }
   .about {
     min-height: 0;
-    padding: 14vh var(--pad) 12vh;
+    padding: 14vh var(--pad) 6vh;
   }
   .about__col,
   .contact__col {

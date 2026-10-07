@@ -12,8 +12,8 @@ export default function Experience() {
     () => {
       ScrollTrigger.create({
         trigger: root.current,
-        start: 'top bottom',
-        end: 'top 50%',
+        start: 'top 55%',
+        end: 'top 5%',
         onUpdate: (s) => (state.xpIn = s.progress),
       })
       gsap.from('.xp__head > *', {

@@ -310,19 +310,19 @@ export function buildWorld() {
 
     const mobile = width < 900
     const s1 = smooth(state.hero)
-    const s2 = smooth(state.skillsIn)
+    const s2 = smooth(mobile ? clamp01(state.skillsIn / 0.18) : state.skillsIn)
     const t = smooth(state.tail)
-    const c = smooth(mobile ? clamp01(state.contact * 3) : state.contact)
+    const c = mobile ? (state.contact > 0 ? 1 : 0) : smooth(state.contact)
     const fy = tower.focusY()
 
     // Phones: size and place the character to fill the free space the layout actually leaves it.
     const fit = (top: number, bottom: number) => {
       const px = bottom - top
       const dist = (avatar.height * height) / (Math.max(px, 1) * 0.95 * 0.5735) // 0.5735 = 2·tan(fov / 2)
-      return { ok: px >= 170, dist: Math.min(16, Math.max(4.5, dist)), sy: 0.5 - (top + bottom) / 2 / height }
+      return { ok: px >= 120, dist: Math.min(32, Math.max(4.5, dist)), sy: 0.5 - (top + bottom) / 2 / height }
     }
     const heroFit = fit(state.slot.heroTop, state.slot.heroBottom)
-    const endFit = fit(state.slot.endTop, state.slot.endBottom - 22)
+    const endFit = fit(state.slot.endTop + 16, state.slot.endBottom - 32)
 
     if (mobile) {
       // A calmer path: character under the name, the whole stack above its panel, character at the end.
@@ -354,12 +354,13 @@ export function buildWorld() {
     const sx = mobile ? 0.1 * (1 - s1) : lerp(lerp(lerp(0.26, 0.29, s1), width < 1200 ? 0.26 : 0.23, s2), 0.25, c)
     const stackSy = 0.5 - (state.slot.stackTop + state.slot.stackBottom) / 2 / height
     const sy = mobile ? lerp(lerp(heroFit.sy, stackSy, s2), endFit.sy, c) : 0
-    const k = first ? 1 : 1 - Math.exp(-7 * dt)
+    const k = first || (mobile && c === 1) ? 1 : 1 - Math.exp(-7 * dt)
     first = false
     pos.lerp(wantPos, k)
     tgt.lerp(wantTgt, k)
     shift.x = lerp(shift.x, sx, k)
-    shift.y = lerp(shift.y, sy, k)
+    // The mobile slots move with the document. Lagging behind their position clips the silhouette.
+    shift.y = mobile ? sy : lerp(shift.y, sy, k)
 
     camera.position.copy(pos)
     camera.lookAt(tgt)
@@ -376,8 +377,9 @@ export function buildWorld() {
     if (!mobile) return 1
     // …and stays away altogether where a short screen leaves it no room.
     const hero = heroFit.ok ? 1 - smooth(clamp01((state.hero - 0.25) / 0.45)) : 0
-    const stack = smooth(clamp01((state.skillsIn - 0.55) / 0.4)) * (1 - smooth(clamp01(state.tail / 0.05)))
-    const end = endFit.ok ? smooth(clamp01(state.contact / 0.3)) : 0
+    const stackEnter = smooth(clamp01((height - state.slot.stackTop) / Math.min(height * 0.3, 220)))
+    const stack = stackEnter * (1 - smooth(clamp01(state.xpIn)))
+    const end = endFit.ok ? smooth(clamp01(state.contact / 0.35)) : 0
     return Math.max(hero, stack, end)
   }
 

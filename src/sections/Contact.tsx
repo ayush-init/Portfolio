@@ -80,7 +80,7 @@ export default function Contact() {
       ScrollTrigger.create({
         // Looked up directly: selector strings here are scoped to this section.
         trigger: document.getElementById('experience'),
-        start: 'top bottom',
+        start: 'top 50%',
         endTrigger: root.current,
         end: 'top bottom',
         onUpdate: (s) => (state.tail = s.progress),
