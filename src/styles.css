@@ -782,22 +782,28 @@ h2 em {
 }
 .card-wrap {
   position: relative;
+  isolation: isolate;
   flex: 0 0 min(64rem, 70vw);
   perspective: 1500px;
 }
 .card__num {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   right: 2%;
   top: -0.52em;
   font-size: clamp(8rem, 30vh, 20rem);
   font-weight: 800;
   font-stretch: 75%;
   line-height: 1;
-  color: transparent;
+  color: var(--paper);
+  paint-order: stroke fill;
   -webkit-text-stroke: 1.5px rgba(18, 18, 16, 0.3);
+  pointer-events: none;
+  user-select: none;
 }
 .card {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 12fr) minmax(0, 10fr);
   height: min(30rem, 62vh); /* fixed, so every card is the same size whatever it says */
@@ -1061,9 +1067,6 @@ h2 em {
   flex-wrap: wrap;
   gap: 0.75rem;
   max-width: 34rem;
-}
-.contact__links .contact__email {
-  display: none;
 }
 .btn {
   flex: 1 1 0px;
@@ -1336,46 +1339,79 @@ h2 em {
   .work__track {
     flex-direction: column;
     align-items: stretch;
-    gap: 3.5rem;
+    gap: 5.5rem;
     width: 100%;
-    padding: 12vh var(--pad);
+    padding: 10vh var(--pad);
   }
-  .work__head,
-  .card-wrap {
+  .work__head {
     flex: none;
   }
+  .card-wrap {
+    flex: none;
+    position: relative;
+    isolation: isolate;
+    display: block;
+    margin-top: 1.5rem;
+  }
   .card {
+    position: relative;
+    z-index: 1;
     grid-template-columns: 1fr;
     height: auto;
   }
   /* stacked cards match too: one picture shape, one text block height */
   .card__cover {
     aspect-ratio: 16 / 11;
-  }
-  .card__cover {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
   .card__num {
-    position: static;
-    display: block;
-    font-size: 5rem;
-    text-align: right;
-    margin-bottom: 1rem;
+    position: absolute;
+    z-index: 0;
+    top: -0.5em;
+    font-size: clamp(5.5rem, 24vw, 8.5rem);
+    line-height: 1;
+    margin-bottom: 0;
   }
-  .card-wrap {
-    display: grid;
-    gap: 0;
+  .card-wrap--right .card__num {
+    right: 4%;
+    left: auto;
+    text-align: right;
+  }
+  .card-wrap--left .card__num {
+    left: 4%;
+    right: auto;
+    text-align: left;
   }
   .card__body > p { min-height: 0; }
   .card__link { overflow-wrap: anywhere; }
   .card__chrome span { overflow-wrap: anywhere; min-width: 0; }
   .contact__links {
+    display: flex;
     flex-direction: column;
-    max-width: none;
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.65rem;
   }
-  .btn { white-space: normal; padding: 0.95rem 0.75rem; }
-  .btn small { overflow-wrap: anywhere; }
+  .contact__links .btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex: none;
+    box-sizing: border-box;
+    gap: 0.65rem;
+    padding: 0.75rem 1.25rem;
+    white-space: nowrap;
+    text-align: left;
+  }
+  .contact__links .btn small {
+    margin-right: 0;
+  }
+  .contact__links .btn__arrow {
+    margin-left: auto;
+    padding-left: 0.35rem;
+  }
   /* Reserve a separate illustration above the complete contact content. */
   .contact {
     grid-template-rows: minmax(200px, 1fr) auto;
@@ -1392,23 +1428,6 @@ h2 em {
   .contact .term {
     display: none;
   }
-  .contact__links .contact__email {
-    display: grid;
-  }
-  .contact__links { gap: 0.5rem; }
-  .contact__links .btn {
-    display: grid;
-    grid-template-columns: 1.25rem 5rem minmax(0, 1fr) 0.9rem;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 44px;
-    padding: 0.65rem 1rem;
-    text-align: left;
-  }
-  .contact__links .btn__icon { grid-column: 1; }
-  .contact__links .btn > span:not(.btn__arrow) { grid-column: 2; }
-  .contact__links .btn small { grid-column: 3; }
-  .contact__links .btn__arrow { grid-column: 4; margin-left: 0; }
   .stat { padding: 1.2rem 1rem; }
 }
 

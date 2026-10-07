@@ -122,7 +122,7 @@ function buildTower() {
       return { name: skill.name, holder, body, text, mat, textMat, v: 0, h: 0 }
     })
     root.add(g)
-    return { g, chips, trimMat }
+    return { g, chips, trimMat, edges: [trim, front, right] }
   })
 
   // Corner rails with request "packets" travelling the stack.
@@ -147,7 +147,7 @@ function buildTower() {
   })
 
   let focus = 0
-  function update(dt: number, time: number) {
+  function update(dt: number, time: number, mobileHero = false) {
     const e = explode()
     const lf = layerFloat()
     const gp = gap(e)
@@ -155,6 +155,9 @@ function buildTower() {
     let topY = 0
     let botY = 0
     layers.forEach((layer, i) => {
+      // Keep only the clean standing surface in the mobile intro; dark rims can linger as a thin line.
+      layer.g.visible = !mobileHero || i === 0
+      layer.edges.forEach(edge => { edge.visible = !mobileHero })
       const lift = smooth(clamp01(lf - i)) * LIFT * e
       const y = -SLAB_H / 2 - i * gp + lift
       layer.g.position.y = y
@@ -175,6 +178,7 @@ function buildTower() {
     })
     const span = Math.max(0.001, topY - botY)
     rails.forEach((r) => {
+      r.visible = !mobileHero
       r.scale.y = span
       r.position.y = (topY + botY) / 2
     })
@@ -303,12 +307,12 @@ export function buildWorld() {
   let first = true
 
   function update(camera: THREE.PerspectiveCamera, width: number, height: number, dt: number, time: number) {
-    tower.update(dt, time)
+    const mobile = width < 900
+    tower.update(dt, time, mobile && state.skillsIn === 0)
     // The stack lifts clear as the next section arrives, so nothing hangs over the experience cards.
     tower.root.position.y = smooth(clamp01(state.xpIn)) * 8
     ambient.update(time)
 
-    const mobile = width < 900
     const s1 = smooth(state.hero)
     const s2 = smooth(mobile ? clamp01(state.skillsIn / 0.18) : state.skillsIn)
     const t = smooth(state.tail)

@@ -173,14 +173,6 @@ export default function Contact() {
         </div>
 
         <div className="contact__links">
-          <a className="btn contact__email" href={`mailto:${resume.email}`}>
-            <svg className="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="m3 6 9 7 9-7" />
-            </svg>
-            <span>Email me</span>
-            <span className="btn__arrow" aria-hidden>↗</span>
-          </a>
           {resume.links.map((l) => (
             <a
               className="btn"

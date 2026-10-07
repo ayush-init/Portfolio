@@ -43,15 +43,18 @@ export default function Projects() {
           },
         })
         // Inside the horizontal run, numbers and covers travel at their own speeds.
-        gsap.utils.toArray<HTMLElement>('.card').forEach((card) => {
+        gsap.utils.toArray<HTMLElement>('.card-wrap').forEach((wrap) => {
+          const card = wrap.querySelector('.card')!
+          const num = wrap.querySelector('.card__num')
+          const cover = wrap.querySelector('.card__cover > *')
           const range = { containerAnimation: slide, trigger: card, start: 'left right', end: 'right left', scrub: true }
-          gsap.fromTo(card.querySelector('.card__num'), { xPercent: 45 }, { xPercent: -45, ease: 'none', scrollTrigger: range })
-          gsap.fromTo(card.querySelector('.card__cover > *'), { xPercent: -5 }, { xPercent: 5, ease: 'none', scrollTrigger: range })
+          if (num) gsap.fromTo(num, { xPercent: 45 }, { xPercent: -45, ease: 'none', scrollTrigger: range })
+          if (cover) gsap.fromTo(cover, { xPercent: -5 }, { xPercent: 5, ease: 'none', scrollTrigger: range })
         })
       })
       mm.add('(max-width: 899px)', () => {
-        gsap.utils.toArray<HTMLElement>('.card').forEach((card) =>
-          gsap.from(card, { y: 80, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: card, start: 'top 85%' } }),
+        gsap.utils.toArray<HTMLElement>('.card-wrap').forEach((wrap) =>
+          gsap.from(wrap, { y: 60, opacity: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: wrap, start: 'top 85%' } }),
         )
       })
     },
@@ -83,7 +86,7 @@ export default function Projects() {
           </header>
 
           {resume.projects.map((p, i) => (
-            <div className="card-wrap" key={p.title}>
+            <div className={`card-wrap ${i % 2 === 0 ? 'card-wrap--right' : 'card-wrap--left'}`} key={p.title}>
               <span className="card__num" aria-hidden>
                 {String(i + 1).padStart(2, '0')}
               </span>

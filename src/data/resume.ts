@@ -188,7 +188,7 @@ export const resume = {
       blurb:
         'An AI-powered B2B platform that orchestrates cross-border trade and EXIM operations, helping Indian exporters manage compliance, documentation, and customs workflows in one place.',
       href: 'https://www.ximverse.com/',
-      linkLabel: 'ximverse.com',
+      linkLabel: 'ximverse',
       image: 'ximverse.webp',
       imageKind: 'shot',
     },
@@ -198,7 +198,7 @@ export const resume = {
       blurb:
         'A DSA tracking platform that follows coding activity, rankings and progress across coding platforms, used by 800+ students at PW IOI.',
       href: 'https://bruteforce.pwioi.com/',
-      linkLabel: 'bruteforce.pwioi.com',
+      linkLabel: 'bruteforce',
       image: 'bruteforce.webp',
       imageKind: 'shot',
     },
@@ -208,7 +208,7 @@ export const resume = {
       blurb:
         'The website for Kusumita Foundation, an NGO restoring nature and supporting communities, with programs, events, donations and volunteer sign-up.',
       href: 'https://kusumita.vercel.app/',
-      linkLabel: 'kusumita.vercel.app',
+      linkLabel: 'kusumita',
       image: 'kusumita.webp',
       imageKind: 'shot',
     },
