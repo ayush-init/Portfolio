@@ -50,11 +50,10 @@ export const resume = {
     // Headline: what I do and why it matters, in one line. The name is already the hero, so it is not repeated here.
     lead: 'I build software that real people',
     leadAccent: 'depend on.',
-    // Proof first (one specific thing per paragraph), then what I care about. Numbers live in the stats row below.
+    // A short personal introduction, followed by the experiences behind the stats below.
     body: [
-      'As Co-Founder and CTO of Ximverse, I led product and engineering for an AI-powered platform that automates Indian customs export filing. It was incubated at PIEDS, BITS Pilani, and backed by a government grant.',
-      'I also built BruteForce, a DSA tracking platform that students at PW IOI use to follow their coding activity, rankings and progress.',
-      'I care about scalable systems, sharp problem-solving, and owning a product end to end: design it, build it, ship it, and keep it running.',
+      'I’m curious about how things work and enjoy turning complex problems into simple, usable experiences. I like working across the whole product, connecting thoughtful design with reliable engineering.',
+      'Co-founding Ximverse and building BruteForce have taught me to take ownership and learn from real users. DSA keeps my problem-solving sharp, while organising RIFT has strengthened how I work with a team.',
     ],
     stats: [
       { value: 1000, suffix: '+', label: 'DSA problems solved' },

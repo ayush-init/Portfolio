@@ -41,19 +41,17 @@ const vertex = /* glsl */ `
   void main() {
     vUv = uv;
     vec3 p = position;
-    p.z += texture2D(uDepth, uv).r * 0.15;
+    // Keep the face almost flat so relief does not distort the original illustration.
+    float face = smoothstep(0.78, 0.9, uv.y);
+    p.z += texture2D(uDepth, uv).r * mix(0.15, 0.025, face);
 
     float breath = sin(uTime * 1.5);
     float chest = smoothstep(0.5, 0.68, uv.y) * (1.0 - smoothstep(0.78, 0.88, uv.y));
     p.y += smoothstep(0.42, 0.9, uv.y) * breath * 0.0065;
     p.x += (uv.x - 0.5) * chest * breath * 0.014;
 
-    // weight shifts from the feet; the head leads the cursor; the hair moves last
-    p.x += uv.y * uv.y * sin(uTime * 0.7) * 0.007;
-    float head = smoothstep(0.8, 0.9, uv.y);
-    p.x += head * uMouse.x * 0.014;
-    p.y -= head * uMouse.y * 0.006;
-    p.x += smoothstep(0.9, 1.0, uv.y) * sin(uTime * 1.9 + uv.x * 9.0) * 0.004;
+    // A gentle whole-image sway preserves the face and hair instead of stretching individual vertices.
+    p.x += sin(uTime * 0.7) * 0.0035;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
   }

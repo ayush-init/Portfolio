@@ -215,18 +215,18 @@ function buildAvatar() {
   stage.add(disc, ring)
 
   let yaw = 0
-  function update(dt: number, time: number, cam: THREE.Vector3) {
+  function update(dt: number, time: number, camera: THREE.PerspectiveCamera) {
+    const cam = camera.position
     const onStage = state.tail > 0.5
     // Spotlight the figure while the About copy is on screen, then return it to normal before the stack sequence.
     const aboutScale = 1 + 0.12 * Math.sin(Math.PI * smooth(state.about))
     // Steps off (rise + shrink) as the stack opens, and is whole again on the contact stage.
     const e = onStage ? 0 : explode()
     if (cutout) {
-      // A flat figure always faces the camera; the cursor swings it a little so the relief reads as depth.
+      // Match the full camera orientation: yaw alone lets an overhead camera squash the artwork vertically.
       root.position.y = onStage ? STAGE_Y : 0
       root.scale.setScalar(onStage ? 1 : aboutScale)
-      yaw = damp(yaw, Math.atan2(cam.x, cam.z) + state.mx * 0.2, 6, dt)
-      root.rotation.y = yaw
+      root.quaternion.copy(camera.quaternion)
       return cutout.update(dt, time, onStage ? smooth(clamp01(state.contact * 2.2)) : clamp01(state.intro) * (1 - e))
     }
     root.position.y = onStage ? STAGE_Y : e * 2.5
@@ -375,7 +375,7 @@ export function buildWorld() {
     fill.target.position.copy(tgt)
     fill.position.copy(tgt).add(a.set(-6, 2, 3))
 
-    avatar.update(dt, time, pos)
+    avatar.update(dt, time, camera)
 
     // On phones the scene steps aside wherever there is text to read: it shows for the hero, the stack and the sign-off.
     if (!mobile) return 1
