@@ -3,6 +3,9 @@ export const site = {
   url: 'https://ayush-chaurasiya.vercel.app/',
   title: 'Ayush Chaurasiya | Full-Stack Developer & AI Engineer',
   description: 'Building useful software, with care from idea to launch.',
-  image: 'social/og-image.png',
+  image: 'social/portfolio-preview.jpg',
+  imageType: 'image/jpeg',
+  imageWidth: '1200',
+  imageHeight: '630',
   imageAlt: 'Ayush Chaurasiya — full-stack developer building web applications and AI-powered products.',
 }
